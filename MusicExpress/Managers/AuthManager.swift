@@ -21,7 +21,7 @@ final class AuthManager {
     }
     
     var isSignedIn: Bool {
-        return false
+        return true
     }
     
     private var accessToken: String? {
