@@ -49,6 +49,7 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError()
     }
+
     override func layoutSubviews() {
         super.layoutSubviews()
         albumNameLabel.sizeToFit()
@@ -69,11 +70,20 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
         albumNameLabel.text = nil
         albumCoverImage.image = nil
     }
+
     
     func configure(with viewmodel: Song) {
         ArtistNameLabel.text = viewmodel.artist_name
         albumNameLabel.text = viewmodel.title
-       albumCoverImage.image = UIImage(data: try! Data(contentsOf: URL(string: ("https://musicexpress.sarafa2n.ru" + viewmodel.poster!.dropFirst(1)))!))
+        
+        do {
+            if let image = try APICaller.shared.getAlbumImage(path: viewmodel.poster!) {
+                albumCoverImage.image = UIImage(data: image)!
+                return
+            }
+        } catch {}
+        
+        // Set default image
     }
     
 }

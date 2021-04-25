@@ -10,34 +10,80 @@ import Foundation
 final class APICaller {
     static let shared = APICaller()
     
+    struct Constans {
+        static let domen = "https://musicexpress.sarafa2n.ru"
+        static let api = "/api/v1/"
+        static let default_albums_count = 6
+        static let default_albums_limit = 0
+    }
+    
     private init() {}
+    
+    enum APIError: Error {
+        case faileedToGetData
+    }
     
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
         
     }
     
-    public func getTopSongs(success: @escaping (Data) -> Void, failure: @escaping (String) -> Void) {
+    public func getTopSongs(completion: @escaping (Result<[Song], Error>) -> Void) {
+        createRequest(
+            with: getAPIURLFromPath(path: "albums?count=\(Constans.default_albums_count)&from=\(Constans.default_albums_limit)"),
+            method: HTTPMethod.Get
+        ) { request in
+            let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+                if error != nil {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+               
+                guard let data = data else {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    do {
+                        let decoded = try JSONDecoder().decode([Song].self, from: data)
+                        completion(.success(decoded))
+                    } catch {
+                        completion(.failure(error))
+                    }
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    enum HTTPMethod: String {
+        case Get
+        case Post
+    }
+    
+    public func getAlbumImage(path: String) throws -> Data? {
+        if let url = getURLFromPath(path: path) {
+            return try Data(contentsOf: url)
+        }
         
-        guard let url = URL(string: "https://musicexpress.sarafa2n.ru/api/v1/albums?count=6&from=0") else {
-            return
-        }
-        let urlRequest = URLRequest(url: url)
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
-            if error != nil {
-                failure("error")
-                return
-            }
-           
-            guard let data = data else {
-                failure("empry data")
-                return
-            }
-            
-           
-            DispatchQueue.main.async {
-                success(data)
-            }
-        }
-        task.resume()
+        return nil
+    }
+    
+    private func getURLFromPath(path: String) -> URL? {
+        return URL(string: Constans.domen + path)
+    }
+    
+    private func getAPIURLFromPath(path: String) -> URL! {
+        return URL(string: Constans.domen + Constans.api + path)
+    }
+    
+    private func createRequest(
+        with url: URL,
+        method: HTTPMethod,
+        completion: @escaping (URLRequest) -> Void
+    ) {
+        // set some http headers
+        completion(URLRequest(url: url))
     }
 }
+

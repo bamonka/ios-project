@@ -28,8 +28,5 @@ struct Song: Codable {
         case artists = "artists"
         case artist_name = "artist_name"
         case poster = "poster"
-        
-      
     }
-    
 }

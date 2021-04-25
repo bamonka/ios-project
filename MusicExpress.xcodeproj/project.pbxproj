@@ -30,6 +30,7 @@
 		55B65CC326305E7F005F761C /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B65CC226305E7F005F761C /* Artist.swift */; };
 		55B65CC626305E91005F761C /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B65CC526305E91005F761C /* UserProfile.swift */; };
 		55B65CC926306CC0005F761C /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B65CC826306CC0005F761C /* Extension.swift */; };
+		55D455872635BB60002FBD48 /* SettingsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D455862635BB60002FBD48 /* SettingsModels.swift */; };
 		9B1781BB2632F66D008A7634 /* SongsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B1781BA2632F66D008A7634 /* SongsResponse.swift */; };
 		9B1781BF263324A7008A7634 /* RecommendedAlbumsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B1781BE263324A7008A7634 /* RecommendedAlbumsCollectionViewCell.swift */; };
 		9B1781C326332592008A7634 /* RecommendedAlbumsCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B1781C226332592008A7634 /* RecommendedAlbumsCellViewModel.swift */; };
@@ -61,6 +62,7 @@
 		55B65CC226305E7F005F761C /* Artist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		55B65CC526305E91005F761C /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		55B65CC826306CC0005F761C /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		55D455862635BB60002FBD48 /* SettingsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModels.swift; sourceTree = "<group>"; };
 		9B1781BA2632F66D008A7634 /* SongsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongsResponse.swift; sourceTree = "<group>"; };
 		9B1781BE263324A7008A7634 /* RecommendedAlbumsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedAlbumsCollectionViewCell.swift; sourceTree = "<group>"; };
 		9B1781C226332592008A7634 /* RecommendedAlbumsCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RecommendedAlbumsCellViewModel.swift; path = MusicExpress/Views/Browse/RecommendedAlbumsCellViewModel.swift; sourceTree = SOURCE_ROOT; };
@@ -133,6 +135,7 @@
 				55B65CBF26305E65005F761C /* AudioTrack.swift */,
 				55B65CC226305E7F005F761C /* Artist.swift */,
 				55B65CC526305E91005F761C /* UserProfile.swift */,
+				55D455862635BB60002FBD48 /* SettingsModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 				55B65C9126305C81005F761C /* TabBarViewController.swift in Sources */,
 				553F0091263023CD008D25A5 /* HomeViewController.swift in Sources */,
 				55B65CBA26305E40005F761C /* HapticsManager.swift in Sources */,
+				55D455872635BB60002FBD48 /* SettingsModels.swift in Sources */,
 				55B65CC026305E65005F761C /* AudioTrack.swift in Sources */,
 				55B65CC926306CC0005F761C /* Extension.swift in Sources */,
 				55B65C9E26305D3B005F761C /* AuthViewController.swift in Sources */,

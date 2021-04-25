@@ -29,6 +29,8 @@ class HomeViewController: UIViewController {
             return HomeViewController.createSectionLayout(index : sectionIndex)
         }
     )
+    
+    private var recomAlbums : [Song]?
      
     private let spinner : UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView()
@@ -44,12 +46,25 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         title = "Home"
         view.backgroundColor = .systemBackground
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "gear"),
+            style: .done,
+            target: self,
+            action: #selector(didTapSettings)
+        )
         // Do any additional setup after loading the view.
         fetchData()
        // configureCollectionView()
         view.addSubview(spinner)
     }
     
+    @objc func didTapSettings() {
+        let vc = SettingsViewController()
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
+        
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         collectionView.frame = view.bounds
@@ -137,20 +152,18 @@ class HomeViewController: UIViewController {
         }
     }
     
-    
-    var recomAlbums : [Song]?
     private func fetchData() {
-        APICaller.shared.getTopSongs { (data) in
-            let decoded = try! JSONDecoder().decode([Song].self, from: data)
-            self.recomAlbums = decoded
-           // print(decoded[0].title)
-            self.configureCollectionView()
-           // print("https://musicexpress.sarafa2n.ru" + self.recomAlbums![0].poster!.dropFirst(1))
-        } failure: { (error) in
-            print("error")
+        APICaller.shared.getTopSongs { result in
+            switch result {
+            case .success(let songs):
+                self.recomAlbums = songs
+                self.configureCollectionView()
+                break
+            case .failure(let error):
+                print(error)
+                break
+            }
         }
-
-     //   sections.append(.recommendedAlbums(viewModels: []))
     }
 
 }
@@ -169,6 +182,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendedAlbumsCollectionViewCell.identifier, for: indexPath) as? RecommendedAlbumsCollectionViewCell else {
             return UICollectionViewCell()
         }
+    
         cell.configure(with: recomAlbums![indexPath.row])
         return cell
     }
