@@ -7,18 +7,10 @@
 
 import UIKit
 
-enum HomeSectionType {
-    
-    case groupOfDay //0
-    case randomTrackOfDayGroup //1
-    case recommendedAlbumsTitle //2
-    case recommendedAlbums(viewModels: [recommendedAlbumsViewModel]) //3
-    case newSongsTitle //4
-    case newSongs //5
-    case topSongsTitle //6
-    case topSongs //7
-
-    
+enum BrowseSectionType {
+    case albums(viewModels: [AlbumCellViewModel])
+    case topTracks(viewModels: [AlbumCellViewModel])
+    case topAlbums(viewModels: [AlbumCellViewModel])
 }
 
 class HomeViewController: UIViewController {
@@ -30,7 +22,7 @@ class HomeViewController: UIViewController {
         }
     )
     
-    private var recomAlbums : [Song]?
+    private var sections = [BrowseSectionType]()
      
     private let spinner : UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView()
@@ -39,8 +31,6 @@ class HomeViewController: UIViewController {
         return spinner
         
     }()
-    
-   // private var sections = [HomeSectionType]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,17 +42,82 @@ class HomeViewController: UIViewController {
             target: self,
             action: #selector(didTapSettings)
         )
-        // Do any additional setup after loading the view.
-        fetchData()
-       // configureCollectionView()
+        
+        configureCollectionView()
         view.addSubview(spinner)
+        fetchData()
+    }
+    
+    private func fetchData() {
+        let group = DispatchGroup()
+        
+        group.enter()
+        group.enter()
+        
+        var albums: [Song]?
+        var topSongs: [Song]?
+
+        APICaller.shared.getAlbums{ result in
+            defer {
+                group.leave()
+            }
+            switch result {
+            case .success(let songs):
+                albums = songs
+                break
+            case .failure(let error):
+                print(error)
+                break
+            }
+        }
+        
+        APICaller.shared.getAlbums{ result in
+            defer {
+                group.leave()
+            }
+            switch result {
+            case .success(let songs):
+                topSongs = songs
+                break
+            case .failure(let error):
+                print(error)
+                break
+            }
+        }
+        
+        group.notify(queue: .main) {
+            guard let albums = albums,
+                  let topSongs = topSongs else {
+                return
+            }
+            
+            self.configureModels(albums: albums, tracks: topSongs)
+        }
     }
     
     @objc func didTapSettings() {
         let vc = SettingsViewController()
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
-        
+    }
+    
+    private func configureModels(albums: [Song], tracks: [Song]) {
+        sections.append(.albums(viewModels: albums.compactMap({
+            return AlbumCellViewModel(
+                artistName: $0.artistName ?? "",
+                title: $0.title,
+                poster: $0.poster ?? ""
+            )
+        })))
+        sections.append(.albums(viewModels: tracks.compactMap({
+            return AlbumCellViewModel(
+                artistName: $0.artistName ?? "-",
+                title: $0.title,
+                poster: $0.poster ?? ""
+            )
+        })))
+        collectionView.reloadData()
+        // sections.append(.topAlbums(viewModels: []))
     }
 
     override func viewDidLayoutSubviews() {
@@ -73,7 +128,14 @@ class HomeViewController: UIViewController {
     private func configureCollectionView() {
         view.addSubview(collectionView)
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        collectionView.register(RecommendedAlbumsCollectionViewCell.self, forCellWithReuseIdentifier: RecommendedAlbumsCollectionViewCell.identifier)
+        collectionView.register(
+            RecommendedAlbumsCollectionViewCell.self,
+            forCellWithReuseIdentifier: RecommendedAlbumsCollectionViewCell.identifier
+        )
+        collectionView.register(
+            TopTracksCollectionViewCell.self,
+            forCellWithReuseIdentifier: TopTracksCollectionViewCell.identifier
+        )
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
@@ -82,87 +144,140 @@ class HomeViewController: UIViewController {
     
     private static func createSectionLayout(index: Int) -> NSCollectionLayoutSection{
         switch index {
-        
-        
         case 0:
-            
-            // Item
-            
-            let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
                 )
             )
             
-            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
-            
-            //Group
-            
-            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3)
+
             let firstGroup = NSCollectionLayoutGroup.vertical(
-                
-                        layoutSize: NSCollectionLayoutSize(
-                            widthDimension: .fractionalWidth(1.0),
-                        heightDimension: .absolute(360)),
-                                                        
-            subitem: item,
-            count: 2)
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(510)
+                ),
+                subitem: item,
+                count: 2
+            )
             
             let secondGroup = NSCollectionLayoutGroup.horizontal(
-                
-                        layoutSize: NSCollectionLayoutSize(
-                            widthDimension: .fractionalWidth(1.0),
-                        heightDimension: .absolute(360)),
-                                                        
-            subitem: firstGroup,
-            count: 2)
-            
-            
-            //Section
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(530)
+                ),
+                subitem: firstGroup,
+                count: 2
+            )
+
             let section = NSCollectionLayoutSection(group: secondGroup)
+
             // свойство для горизонтальных групп
-           section.orthogonalScrollingBehavior = .continuous
+            section.orthogonalScrollingBehavior = .continuous
+
             return section
-            
-            
-        default:
-            // Item
-            
-            let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .fractionalHeight(0.5)
+        case 1:
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
                 )
             )
             
             item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+
+            let firstGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(360)
+                ),
+                subitem: item,
+                count: 5
+            )
             
-            //Group
-            let group = NSCollectionLayoutGroup.vertical(
-                
-                        layoutSize: NSCollectionLayoutSize(
-                            widthDimension: .fractionalWidth(1.0),
-                        heightDimension: .absolute(360)),
-                                                        
-            subitem: item,
-            count: 1)
-            
-            //Section
-            let section = NSCollectionLayoutSection(group: group)
+            let secondGroup = NSCollectionLayoutGroup.horizontal(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(360)
+                ),
+                subitem: firstGroup,
+                count: 1
+            )
+
+            let section = NSCollectionLayoutSection(group: secondGroup)
+            // свойство для горизонтальных групп
+            section.orthogonalScrollingBehavior = .continuous
+
             return section
-        }
-    }
-    
-    private func fetchData() {
-        APICaller.shared.getTopSongs { result in
-            switch result {
-            case .success(let songs):
-                self.recomAlbums = songs
-                self.configureCollectionView()
-                break
-            case .failure(let error):
-                print(error)
-                break
-            }
+            
+        case 2:
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
+                )
+            )
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+
+            let firstGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(360)
+                ),
+                subitem: item,
+                count: 4
+            )
+            
+            let secondGroup = NSCollectionLayoutGroup.horizontal(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(360)
+                ),
+                subitem: firstGroup,
+                count: 1
+            )
+
+            let section = NSCollectionLayoutSection(group: secondGroup)
+            // свойство для горизонтальных групп
+            section.orthogonalScrollingBehavior = .continuous
+
+            return section
+        default:
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
+                )
+            )
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+
+            let firstGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(360)
+                ),
+                subitem: item,
+                count: 2
+            )
+            
+            let secondGroup = NSCollectionLayoutGroup.horizontal(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(360)
+                ),
+                subitem: firstGroup,
+                count: 2
+            )
+
+            let section = NSCollectionLayoutSection(group: secondGroup)
+            // свойство для горизонтальных групп
+            section.orthogonalScrollingBehavior = .continuous
+
+            return section
         }
     }
 
@@ -170,21 +285,62 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 6
+        let type = sections[section]
+        switch type {
+        case .albums(let model):
+            return model.count
+        case .topAlbums(let model):
+            return model.count
+        case .topTracks(let model):
+            return model.count
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return sections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendedAlbumsCollectionViewCell.identifier, for: indexPath) as? RecommendedAlbumsCollectionViewCell else {
-            return UICollectionViewCell()
+        let type = sections[indexPath.section]
+        switch type {
+        case .albums(let viewModels):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RecommendedAlbumsCollectionViewCell.identifier,
+                for: indexPath
+            ) as? RecommendedAlbumsCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            
+            let viewModel = viewModels[indexPath.row]
+            cell.configure(with: viewModel)
+
+            return cell
+        case .topAlbums(let viewModels):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RecommendedAlbumsCollectionViewCell.identifier,
+                for: indexPath
+            ) as? RecommendedAlbumsCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            
+            let viewModel = viewModels[indexPath.row]
+            cell.configure(with: viewModel)
+
+            return cell
+        case .topTracks(let viewModels):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RecommendedAlbumsCollectionViewCell.identifier,
+                for: indexPath
+            ) as? RecommendedAlbumsCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            
+            let viewModel = viewModels[indexPath.row]
+            cell.configure(with: viewModel)
+
+            return cell
         }
-    
-        cell.configure(with: recomAlbums![indexPath.row])
-        return cell
     }
     
 }

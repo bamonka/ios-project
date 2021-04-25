@@ -7,14 +7,13 @@
 
 import Foundation
 
-//"title": "Collection remixed",
+// "title": "Collection remixed",
 //    "artist_id": 5,
 //    "artist_name": "Apocalyptica",
 //    "poster": "./album_posters/44f5aced35a6ef43a24c58bfde47dd1c.jpeg",
 
-struct recommendedAlbumsViewModel {
+struct AlbumCellViewModel {
     let artistName : String
     let title : String
     let poster : String
-    
 }

@@ -14,7 +14,13 @@ final class APICaller {
         static let domen = "https://musicexpress.sarafa2n.ru"
         static let api = "/api/v1/"
         static let default_albums_count = 6
-        static let default_albums_limit = 0
+        static let default_albums_offset = 0
+        static let default_tracks_count = 5
+        static let default_tracks_offset = 0
+        static let default_top_albums_count = 3
+        static let default_top_albums_offset = 0
+        static let default_top_songs_count = 5
+        static let default_top_songs_offset = 0
     }
     
     private init() {}
@@ -27,9 +33,9 @@ final class APICaller {
         
     }
     
-    public func getTopSongs(completion: @escaping (Result<[Song], Error>) -> Void) {
+    private func getSongs(url: URL, completion: @escaping (Result<[Song], Error>) -> Void) {
         createRequest(
-            with: getAPIURLFromPath(path: "albums?count=\(Constans.default_albums_count)&from=\(Constans.default_albums_limit)"),
+            with: url,
             method: HTTPMethod.Get
         ) { request in
             let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
@@ -54,6 +60,34 @@ final class APICaller {
             }
             task.resume()
         }
+    }
+    
+    public func getAlbums(completion: @escaping (Result<[Song], Error>) -> Void) {
+        getSongs(
+            url: getAPIURLFromPath(path: "albums?count=\(Constans.default_albums_count)&from=\(Constans.default_albums_offset)"),
+            completion: completion
+        )
+    }
+    
+    public func getNewSongs(completion: @escaping (Result<[Song], Error>) -> Void) {
+        getSongs(
+            url: getAPIURLFromPath(path: "tracks?count=\(Constans.default_tracks_count)&from=\(Constans.default_tracks_offset)"),
+            completion: completion
+        )
+    }
+    
+    public func getTopAlbums(completion: @escaping (Result<[Song], Error>) -> Void) {
+        getSongs(
+            url: getAPIURLFromPath(path: "top?count=\(Constans.default_top_albums_count)&from=\(Constans.default_top_albums_offset)"),
+            completion: completion
+        )
+    }
+    
+    public func getTopSongs(completion: @escaping (Result<[Song], Error>) -> Void) {
+        getSongs(
+            url: getAPIURLFromPath(path: "top?count=\(Constans.default_top_songs_count)&from=\(Constans.default_top_songs_count)"),
+            completion: completion
+        )
     }
     
     enum HTTPMethod: String {

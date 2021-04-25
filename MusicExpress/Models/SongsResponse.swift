@@ -15,8 +15,8 @@ struct Song: Codable {
     let artists : String?
     let id: Int?
     let audio : String?
-    let album_poster : String?
-    let artist_name : String?
+    let albumPoster : String?
+    let artistName : String?
     let poster : String?
   
     
@@ -24,9 +24,9 @@ struct Song: Codable {
         case title = "title"
         case id
         case audio = "audio"
-        case album_poster = "album_poster"
+        case albumPoster = "album_poster"
         case artists = "artists"
-        case artist_name = "artist_name"
+        case artistName = "artist_name"
         case poster = "poster"
     }
 }

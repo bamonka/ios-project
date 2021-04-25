@@ -42,8 +42,6 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(albumCoverImage)
         contentView.addSubview(albumNameLabel)
        // contentView.addSubview(ArtistNameLabel)
-
-        
     }
     
     required init?(coder: NSCoder) {
@@ -72,12 +70,12 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
     }
 
     
-    func configure(with viewmodel: Song) {
-        ArtistNameLabel.text = viewmodel.artist_name
+    func configure(with viewmodel: AlbumCellViewModel) {
+        ArtistNameLabel.text = viewmodel.artistName
         albumNameLabel.text = viewmodel.title
         
         do {
-            if let image = try APICaller.shared.getAlbumImage(path: viewmodel.poster!) {
+            if let image = try APICaller.shared.getAlbumImage(path: viewmodel.poster) {
                 albumCoverImage.image = UIImage(data: image)!
                 return
             }
