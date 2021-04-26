@@ -104,15 +104,15 @@ class HomeViewController: UIViewController {
     private func configureModels(albums: [Song], tracks: [Song]) {
         sections.append(.albums(viewModels: albums.compactMap({
             return AlbumCellViewModel(
-                artistName: $0.artistName ?? "",
-                title: $0.title,
+                artistName: $0.artist_name ?? "-",
+                title: $0.title ?? "",
                 poster: $0.poster ?? ""
             )
         })))
         sections.append(.albums(viewModels: tracks.compactMap({
             return AlbumCellViewModel(
-                artistName: $0.artistName ?? "-",
-                title: $0.title,
+                artistName: $0.artist_name ?? "-",
+                title: $0.title ?? "",
                 poster: $0.poster ?? ""
             )
         })))
