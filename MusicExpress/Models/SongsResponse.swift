@@ -11,13 +11,16 @@ import Foundation
 // приходит с бэка и декодится в это
 struct Song: Codable {
     
-    let title: String
+    let title: String? // альбомы трэк 
     let artists : String?
     let id: Int?
-    let audio : String?
-    let album_poster : String?
-    let artist_name : String?
-    let poster : String?
+    let audio : String? // трэк
+    let album_poster : String? // трэк
+    let artist_name : String? // альбомы
+    let poster : String? //альбом
+    let avatar: String? // артист
+    let name: String? // артист
+    let artist : String? // трэк
   
     
     enum CodingKeys : String, CodingKey {
@@ -28,5 +31,8 @@ struct Song: Codable {
         case artists = "artists"
         case artist_name = "artist_name"
         case poster = "poster"
+        case avatar = "avatar"
+        case name = "name"
+        case artist = "artist"
     }
 }
