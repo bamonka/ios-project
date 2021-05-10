@@ -25,13 +25,13 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
     
     private let albumNameLabel : UILabel = {
        let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.font = .systemFont(ofSize: 15, weight: .semibold)
         label.numberOfLines = 0
         return label
     }()
     private let ArtistNameLabel : UILabel = {
        let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .light)
+        label.font = .systemFont(ofSize: 15, weight: .light)
         label.numberOfLines = 0
         return label
     }()
@@ -42,8 +42,6 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(albumCoverImage)
         contentView.addSubview(albumNameLabel)
        // contentView.addSubview(ArtistNameLabel)
-
-        
     }
     
     required init?(coder: NSCoder) {
@@ -56,12 +54,12 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
         ArtistNameLabel.sizeToFit()
         
         let imageSize: CGFloat = contentView.height-50
-        albumCoverImage.frame = CGRect(x: 5, y: 5, width: imageSize, height: imageSize)
+        albumCoverImage.frame = CGRect(x: 0, y: 0, width: contentView.width , height: imageSize)
         
         albumNameLabel.frame = CGRect(x: albumCoverImage.left,
                                       y: albumCoverImage.bottom+2,
-                                      width: albumNameLabel.width,
-                                      height: 50)
+                                      width: contentView.width,
+                                      height: albumNameLabel.height)
     }
     
     override func prepareForReuse() {
@@ -72,12 +70,12 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
     }
 
     
-    func configure(with viewmodel: Song) {
-        ArtistNameLabel.text = viewmodel.artist_name
+    func configure(with viewmodel: AlbumCellViewModel) {
+        ArtistNameLabel.text = viewmodel.artistName
         albumNameLabel.text = viewmodel.title
         
         do {
-            if let image = try APICaller.shared.getAlbumImage(path: viewmodel.poster!) {
+            if let image = try APICaller.shared.getAlbumImage(path: viewmodel.poster) {
                 albumCoverImage.image = UIImage(data: image)!
                 return
             }
