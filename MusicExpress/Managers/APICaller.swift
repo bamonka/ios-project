@@ -78,9 +78,10 @@ final class APICaller {
     
     public func getTopAlbums(completion: @escaping (Result<[Song], Error>) -> Void) {
         getSongs(
-            url: getAPIURLFromPath(path: "top?count=\(Constans.default_top_albums_count)&from=\(Constans.default_top_albums_offset)"),
+            //https://musicexpress.sarafa2n.ru/api/v1/albums/top?count=3&from=0
+            url: URL(string: "https://musicexpress.sarafa2n.ru/api/v1/albums/top?count=3&from=0")!,
             completion: completion
-        )
+            )
     }
     
     public func getTopSongs(completion: @escaping (Result<[Song], Error>) -> Void) {

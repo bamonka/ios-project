@@ -14,7 +14,7 @@ enum BrowseSectionType {
     case newSongs(viewModels : [NewSongsCellViewModel]) //2
     
     case topTracks(viewModels: [TopSongsCellViewModel]) //3
-    case topAlbums(viewModels: [AlbumCellViewModel]) //4
+    case topAlbums(viewModels: [RecomendedAlbumCellViewModel]) //4
     
     var title: String {
         
@@ -34,6 +34,7 @@ enum BrowseSectionType {
             
         case .newSongs:
             return "Новые релизы"
+        
         }
     }
     
@@ -82,12 +83,14 @@ class HomeViewController: UIViewController {
         group.enter()
         group.enter()
         group.enter()
+        group.enter()
         
         
         var albums: [Song]?
         var topSongs: [Song]?
         var groupOfDay: [Song]?
         var newSongs: [Song]?
+        var topAlbums: [Song]?
         
         APICaller.shared.getTopSongs { result in
             defer {
@@ -148,18 +151,30 @@ class HomeViewController: UIViewController {
             }
         }
         
+        APICaller.shared.getTopAlbums { result in
+            defer {
+                group.leave()
+            }
+            switch result{
+            case .success(let GottopAlbums):
+                topAlbums = GottopAlbums
+            case .failure(let error):
+                print("Can't get top albums",error)
+        }
         
+        }
         
         
         group.notify(queue: .main) {
             guard let albums = albums,
                   let topSongs = topSongs,
                   let groupOfDay = groupOfDay,
-                  let newSongs = newSongs else {
+                  let newSongs = newSongs,
+                  let topAlbums = topAlbums else {
                 return
             }
             
-            self.configureModels(albums: albums, tracks: topSongs,groupOfDay: groupOfDay,newSongs: newSongs)
+            self.configureModels(albums: albums, tracks: topSongs,groupOfDay: groupOfDay,newSongs: newSongs,topAlbums: topAlbums)
         }
     }
     
@@ -169,7 +184,7 @@ class HomeViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    private func configureModels(albums: [Song], tracks: [Song],groupOfDay: [Song],newSongs: [Song]) {
+    private func configureModels(albums: [Song], tracks: [Song],groupOfDay: [Song],newSongs: [Song],topAlbums: [Song]) {
         
         //Строгий порядок!!!
         
@@ -205,6 +220,13 @@ class HomeViewController: UIViewController {
                 album_poster: $0.album_poster ?? "")
             
         })))
+        
+        sections.append( .topAlbums(viewModels: topAlbums.compactMap({
+            return RecomendedAlbumCellViewModel(
+            title: $0.title ?? "",
+            artist: $0.artist ?? "",
+            poster: $0.poster ?? ""
+        )})))
         collectionView.reloadData()
         // sections.append(.topAlbums(viewModels: []))
     }
@@ -239,6 +261,7 @@ class HomeViewController: UIViewController {
             TopTracksCollectionViewCell.self,
             forCellWithReuseIdentifier: TopTracksCollectionViewCell.identifier
         )
+        collectionView.register(PopularAlbumCollectionViewCell.self, forCellWithReuseIdentifier: PopularAlbumCollectionViewCell.identifier)
         
         
         //регистрация названия коллекций
@@ -289,6 +312,7 @@ class HomeViewController: UIViewController {
            // section.orthogonalScrollingBehavior = .continuous
 
             return section
+            
          //рекомендуемые альбомы
         case 1:
             let item = NSCollectionLayoutItem(
@@ -382,6 +406,42 @@ class HomeViewController: UIViewController {
             section.boundarySupplementaryItems = supplementaryViews
 
             return section
+            
+        case 4:
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
+                )
+            )
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3)
+
+            let firstGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(510)
+                ),
+                subitem: item,
+                count: 1
+            )
+            
+            let secondGroup = NSCollectionLayoutGroup.horizontal(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(530)
+                ),
+                subitem: firstGroup,
+                count: 1
+            )
+
+            let section = NSCollectionLayoutSection(group: secondGroup)
+
+            // свойство для горизонтальных групп
+            section.orthogonalScrollingBehavior = .continuous
+            section.boundarySupplementaryItems = supplementaryViews
+            return section
+            
         default:
             let item = NSCollectionLayoutItem(
                 layoutSize: NSCollectionLayoutSize(
@@ -479,9 +539,9 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             
         case .topAlbums(let viewModels):
             guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: RecommendedAlbumsCollectionViewCell.identifier,
+                withReuseIdentifier: PopularAlbumCollectionViewCell.identifier,
                 for: indexPath
-            ) as? RecommendedAlbumsCollectionViewCell else {
+            ) as? PopularAlbumCollectionViewCell else {
                 return UICollectionViewCell()
             }
             
