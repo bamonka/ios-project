@@ -1,14 +1,16 @@
 //
-//  CollectionViewCell.swift
+//  NewSongsCVCell.swift
 //  MusicExpress
 //
-//  Created by Лексус on 25.04.2021.
+//  Created by Антон Шарин on 08.05.2021.
 //
 
 import UIKit
 
-class TopTracksCollectionViewCell: UICollectionViewCell {
-    static let identifier = "TopTracksCollectionViewCell"
+class NewSongsCVCell: UICollectionViewCell {
+    
+    static let identifier = "NewSongsCVCell"
+    
     
     private let durationLabel : UILabel = {
         
@@ -33,7 +35,7 @@ class TopTracksCollectionViewCell: UICollectionViewCell {
     
     private let trackNameLabel : UILabel = {
         let label = UILabel()
-        label.numberOfLines = 2
+        
         return label
         
     }()
@@ -72,7 +74,7 @@ class TopTracksCollectionViewCell: UICollectionViewCell {
         
         trackImage.frame = CGRect(x: 0, y: 0, width: 30 , height: 30)
         artistLabel.frame = CGRect(x: 40, y: 5, width: artistLabel.width, height: 20)
-        trackNameLabel.frame = CGRect(x: 40, y: 20, width: 300, height: 20)
+        trackNameLabel.frame = CGRect(x: 40, y: 20, width: trackNameLabel.width, height: 20)
         durationLabel.frame = CGRect(x: contentView.right - 35, y: 20, width: durationLabel.width, height: 20)
         
         
@@ -90,7 +92,7 @@ class TopTracksCollectionViewCell: UICollectionViewCell {
     
     
     
-    func configure(with viewmodel: TopSongsCellViewModel)  {
+    func configure(with viewmodel: NewSongsCellViewModel)  {
         
         trackNameLabel.text = viewmodel.title
         artistLabel.text = viewmodel.artist
@@ -109,12 +111,12 @@ class TopTracksCollectionViewCell: UICollectionViewCell {
         
         durationLabel.text = b
         
-       // do {
-       //     if let image = try APICaller.shared.getAlbumImage(path: "tracks/"+viewmodel.album_poster) {
-       //         trackImage.image = UIImage(data: image)!
-      //          return
-      //      }
-      //  } catch {}
+        do {
+            if let image = try APICaller.shared.getAlbumImage(path: viewmodel.poster) {
+                trackImage.image = UIImage(data: image)!
+                return
+            }
+        } catch {}
         
         
     }

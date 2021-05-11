@@ -85,7 +85,8 @@ final class APICaller {
     
     public func getTopSongs(completion: @escaping (Result<[Song], Error>) -> Void) {
         getSongs(
-            url: getAPIURLFromPath(path: "top?count=\(Constans.default_top_songs_count)&from=\(Constans.default_top_songs_count)"),
+            //https://musicexpress.sarafa2n.ru/api/v1/tracks/top?count=5&from=0
+            url: getAPIURLFromPath(path: "tracks/top?count=\(Constans.default_top_songs_count)&from=\(Constans.default_top_songs_count)"),
             completion: completion
         )
     }
@@ -154,5 +155,33 @@ final class APICaller {
         
     }
     
+    public func getGroupOfDay(completion: @escaping (Result<Song, Error>) -> Void) {
+        createRequest(with: URL(string: Constans.domen + Constans.api + "artist/day")! , method: .Get) {
+            request in
+            
+                let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+                    if error != nil {
+                        completion(.failure(APIError.faileedToGetData))
+                        return
+                    }
+                   
+                    guard let data = data else {
+                        completion(.failure(APIError.faileedToGetData))
+                        return
+                    }
+
+                    DispatchQueue.main.async {
+                        do {
+                            let decoded = try JSONDecoder().decode(Song.self, from: data)
+                            completion(.success(decoded))
+                        } catch {
+                            completion(.failure(error))
+                        }
+                    }
+                }
+                task.resume()
+            
+        }
+    }
 }
 

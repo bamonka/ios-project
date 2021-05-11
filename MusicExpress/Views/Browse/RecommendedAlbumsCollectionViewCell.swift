@@ -25,13 +25,13 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
     
     private let albumNameLabel : UILabel = {
        let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.font = .systemFont(ofSize: 15, weight: .semibold)
         label.numberOfLines = 0
         return label
     }()
     private let ArtistNameLabel : UILabel = {
        let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .light)
+        label.font = .systemFont(ofSize: 15, weight: .light)
         label.numberOfLines = 0
         return label
     }()
@@ -54,12 +54,12 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
         ArtistNameLabel.sizeToFit()
         
         let imageSize: CGFloat = contentView.height-50
-        albumCoverImage.frame = CGRect(x: 5, y: 5, width: imageSize, height: imageSize)
+        albumCoverImage.frame = CGRect(x: 0, y: 0, width: contentView.width , height: imageSize)
         
         albumNameLabel.frame = CGRect(x: albumCoverImage.left,
                                       y: albumCoverImage.bottom+2,
-                                      width: albumNameLabel.width,
-                                      height: 50)
+                                      width: contentView.width,
+                                      height: albumNameLabel.height)
     }
     
     override func prepareForReuse() {
