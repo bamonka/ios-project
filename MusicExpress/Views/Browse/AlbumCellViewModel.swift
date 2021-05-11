@@ -16,6 +16,4 @@ struct AlbumCellViewModel {
     let artistName : String
     let title : String
     let poster : String
-    
-    
 }

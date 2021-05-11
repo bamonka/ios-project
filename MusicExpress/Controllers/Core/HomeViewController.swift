@@ -111,8 +111,7 @@ class HomeViewController: UIViewController {
             }
             switch result {
             case .success(let songs):
-                albums = songs
-                
+                albums = songs 
                 break
             case .failure(let error):
                 print(error)
@@ -199,8 +198,7 @@ class HomeViewController: UIViewController {
             return AlbumCellViewModel(
                 artistName: $0.artist_name ?? "-",
                 title: $0.title ?? "",
-                poster: $0.poster ?? ""
-                
+                poster: $0.poster ?? ""  
             )
         })))
         sections.append(.newSongs(viewModels: newSongs.compactMap({
@@ -304,8 +302,6 @@ class HomeViewController: UIViewController {
                 count: 2
             )
             
-           
-
             let section = NSCollectionLayoutSection(group: firstGroup)
 
             // свойство для горизонтальных групп
@@ -369,8 +365,6 @@ class HomeViewController: UIViewController {
                 count: 5
             )
             
-            
-
             let section = NSCollectionLayoutSection(group: firstGroup)
             // свойство для горизонтальных групп
             
@@ -523,7 +517,6 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         let type = sections[indexPath.section]
         switch type {
-        
         case .albums(let viewModels):
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: RecommendedAlbumsCollectionViewCell.identifier,
