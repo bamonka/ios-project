@@ -70,16 +70,22 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
     }
 
     
-    func configure(with viewmodel: AlbumCellViewModel) {
+    func configure(with viewmodel: AlbumCellViewModel)  {
         ArtistNameLabel.text = viewmodel.artistName
         albumNameLabel.text = viewmodel.title
         
-        do {
-            if let image = try APICaller.shared.getAlbumImage(path: viewmodel.poster) {
-                albumCoverImage.image = UIImage(data: image)!
-                return
-            }
-        } catch {}
+        guard let url = URL(string: "https://musicexpress.sarafa2n.ru" + viewmodel.poster) else {
+            return
+        }
+        
+        albumCoverImage.sd_setImage(with: url, completed: nil)
+        
+      //  do {
+    //        if let image = try APICaller.shared.getAlbumImage(path: viewmodel.poster) {
+    //            albumCoverImage.image = UIImage(data: image)!
+    //            return
+   //         }
+   //     } catch {}
         
         // Set default image
     }

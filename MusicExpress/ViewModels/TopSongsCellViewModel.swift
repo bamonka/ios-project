@@ -13,6 +13,7 @@ struct TopSongsCellViewModel {
     let duration: Int
     let artist: String
     let album_poster: String
+    let artist_id: Int?
     
 }
 

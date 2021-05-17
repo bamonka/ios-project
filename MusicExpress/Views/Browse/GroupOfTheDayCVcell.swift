@@ -97,14 +97,14 @@ class GroupOfTheDayCVcell: UICollectionViewCell {
 
     
     func configure(with viewmodel: groupOfDayCellViewModel) {
+        
        nameOfGroupOfDay.text = viewmodel.name
         
-        do {
-            if let image = try APICaller.shared.getAlbumImage(path: viewmodel.poster) {
-                groupImage.image = UIImage(data: image)!
-                return
-            }
-        } catch {}
+        guard let url = URL(string: "https://musicexpress.sarafa2n.ru" + viewmodel.poster) else {
+            return
+        }
+        
+        groupImage.sd_setImage(with: url, completed: nil)
         
         // Set default image
     }

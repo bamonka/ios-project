@@ -72,9 +72,9 @@ class NewSongsCVCell: UICollectionViewCell {
         durationLabel.sizeToFit()
         
         
-        trackImage.frame = CGRect(x: 0, y: 0, width: 30 , height: 30)
-        artistLabel.frame = CGRect(x: 40, y: 5, width: artistLabel.width, height: 20)
-        trackNameLabel.frame = CGRect(x: 40, y: 20, width: trackNameLabel.width, height: 20)
+        trackImage.frame = CGRect(x: 10, y: (contentView.bottom+contentView.top)/2 - 20, width: 40 , height: 40)
+        artistLabel.frame = CGRect(x: 55, y: 15, width: artistLabel.width, height: 20)
+        trackNameLabel.frame = CGRect(x: 55, y: 30, width: trackNameLabel.width, height: 20)
         durationLabel.frame = CGRect(x: contentView.right - 35, y: 20, width: durationLabel.width, height: 20)
         
         
@@ -111,12 +111,11 @@ class NewSongsCVCell: UICollectionViewCell {
         
         durationLabel.text = b
         
-        do {
-            if let image = try APICaller.shared.getAlbumImage(path: viewmodel.poster) {
-                trackImage.image = UIImage(data: image)!
-                return
-            }
-        } catch {}
+        guard let url = URL(string: "https://musicexpress.sarafa2n.ru" + viewmodel.poster) else {
+            return
+        }
+        
+        trackImage.sd_setImage(with: url, completed: nil)
         
         
     }

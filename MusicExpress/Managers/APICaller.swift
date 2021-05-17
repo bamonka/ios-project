@@ -29,9 +29,66 @@ final class APICaller {
         case faileedToGetData
     }
     
+    
+    //https://musicexpress.sarafa2n.ru/api/v1/albums/5 url Альбома
+    
+    public func getAlbumDetails(for album: Song?,completion: @escaping(Result<Song, Error>) -> Void) {
+        createRequest(with: getAPIURLFromPath(path: "albums/" + String(((album?.id!)!))),
+                      method: .Get
+                     ) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+                
+                do {
+                    let decoded = try JSONDecoder().decode(Song.self, from: data)
+                    completion(.success(decoded))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+                      
+        task.resume()
+        }
+    }
+    
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
         
     }
+    
+    public func getDescription(artist_id:Int,completion: @escaping (Result<Song,Error>)-> Void) {
+        createRequest(with: getAPIURLFromPath(path: "artists/" + String(artist_id)),
+                      method: .Get
+        ) {
+            request in
+            let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+                if error != nil {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+               
+                guard let data = data else {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    do {
+                        let decoded = try JSONDecoder().decode(Song.self, from: data)
+                        completion(.success(decoded))
+                        print(decoded.description)
+                        print(request)
+                    } catch {
+                        completion(.failure(error))
+                    }
+                }
+            }
+            task.resume()
+        }
+        }
+    
     
     private func getSongs(url: URL, completion: @escaping (Result<[Song], Error>) -> Void) {
         createRequest(
@@ -87,7 +144,7 @@ final class APICaller {
     public func getTopSongs(completion: @escaping (Result<[Song], Error>) -> Void) {
         getSongs(
             //https://musicexpress.sarafa2n.ru/api/v1/tracks/top?count=5&from=0
-            url: getAPIURLFromPath(path: "tracks/top?count=\(Constans.default_top_songs_count)&from=\(Constans.default_top_songs_count)"),
+            url: getAPIURLFromPath(path: "tracks/top?count=5&from=0"),
             completion: completion
         )
     }
@@ -96,6 +153,8 @@ final class APICaller {
         case Get
         case Post
     }
+    
+    //https://musicexpress.sarafa2n.ru/api/v1/albums/5   url альбома
     
     public func getAlbumImage(path: String) throws -> Data? {
         if let url = getURLFromPath(path: path) {
