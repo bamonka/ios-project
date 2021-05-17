@@ -13,12 +13,11 @@ class PopularAlbumCollectionViewCell: UICollectionViewCell {
     
     
     private let albumImage: UIImageView = {
-        let image = UIImageView()
         
-        image.contentMode = .scaleToFill
-        
-        
-        return image
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "photo")
+        imageView.contentMode = .scaleToFill
+        return imageView
     }()
     
     
@@ -63,7 +62,7 @@ class PopularAlbumCollectionViewCell: UICollectionViewCell {
 
         
         
-        albumImage.frame = CGRect(x: 0, y: 0, width: 30 , height: 30)
+        albumImage.frame = CGRect(x: 0, y: 0, width: contentView.width, height: contentView.width)
         artistNameLabel.frame = CGRect(x: 40, y: 5, width: artistNameLabel.width, height: 20)
         albumNameLabel.frame = CGRect(x: 40, y: 20, width: albumNameLabel.width, height: 20)
         
@@ -88,7 +87,11 @@ class PopularAlbumCollectionViewCell: UICollectionViewCell {
         albumNameLabel.text = viewmodel.artist
         
 
-       
+        guard let url = URL(string: "https://musicexpress.sarafa2n.ru" + viewmodel.poster) else {
+            return
+        }
+        
+        albumImage.sd_setImage(with: url, completed: nil)
         
     }
     

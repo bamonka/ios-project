@@ -16,6 +16,9 @@ enum BrowseSectionType {
     case topTracks(viewModels: [TopSongsCellViewModel]) //3
     case topAlbums(viewModels: [RecomendedAlbumCellViewModel]) //4
     
+    case teamNameLabel //5
+    
+    
     var title: String {
         
         switch self {
@@ -34,6 +37,8 @@ enum BrowseSectionType {
             
         case .newSongs:
             return "Новые релизы"
+        case .teamNameLabel:
+        return ""
         
         }
     }
@@ -42,6 +47,14 @@ enum BrowseSectionType {
 }
 
 class HomeViewController: UIViewController {
+    
+    private var albums: [Song] = []
+    private var tracks: [Song] = []
+    private var groupOfDay: [Song] = []
+    private var newSongs: [Song] = []
+    private var topAlbums: [Song] = []
+    
+    
 
     private var collectionView : UICollectionView = UICollectionView(
         frame: .zero,
@@ -173,7 +186,13 @@ class HomeViewController: UIViewController {
                 return
             }
             
-            self.configureModels(albums: albums, tracks: topSongs,groupOfDay: groupOfDay,newSongs: newSongs,topAlbums: topAlbums)
+            self.configureModels(
+                albums: albums,
+                tracks: topSongs,
+                groupOfDay: groupOfDay,
+                newSongs: newSongs,
+                topAlbums: topAlbums
+            )
         }
     }
     
@@ -183,7 +202,24 @@ class HomeViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    private func configureModels(albums: [Song], tracks: [Song],groupOfDay: [Song],newSongs: [Song],topAlbums: [Song]) {
+   
+    
+    private func configureModels(
+        albums: [Song],
+        tracks: [Song],
+        groupOfDay: [Song],
+        newSongs: [Song],
+        topAlbums: [Song]
+    
+    
+    ) {
+        
+        self.albums = albums
+        self.tracks = tracks
+        self.groupOfDay = groupOfDay
+        self.newSongs = newSongs
+        self.topAlbums = topAlbums
+        
         
         //Строгий порядок!!!
         
@@ -215,7 +251,8 @@ class HomeViewController: UIViewController {
                 title: $0.title ?? "",
                 duration: $0.duration ?? 0,
                 artist: $0.artist ?? "",
-                album_poster: $0.album_poster ?? "")
+                album_poster: $0.album_poster ?? "",
+                artist_id: 0)
             
         })))
         
@@ -225,6 +262,7 @@ class HomeViewController: UIViewController {
             artist: $0.artist ?? "",
             poster: $0.poster ?? ""
         )})))
+        sections.append(.teamNameLabel)
         collectionView.reloadData()
         // sections.append(.topAlbums(viewModels: []))
     }
@@ -260,6 +298,7 @@ class HomeViewController: UIViewController {
             forCellWithReuseIdentifier: TopTracksCollectionViewCell.identifier
         )
         collectionView.register(PopularAlbumCollectionViewCell.self, forCellWithReuseIdentifier: PopularAlbumCollectionViewCell.identifier)
+        collectionView.register(TeamNameCollectionViewCell.self, forCellWithReuseIdentifier: TeamNameCollectionViewCell.identifier)
         
         
         //регистрация названия коллекций
@@ -400,7 +439,7 @@ class HomeViewController: UIViewController {
             section.boundarySupplementaryItems = supplementaryViews
 
             return section
-            
+           // популярные альбомы
         case 4:
             let item = NSCollectionLayoutItem(
                 layoutSize: NSCollectionLayoutSize(
@@ -409,23 +448,16 @@ class HomeViewController: UIViewController {
                 )
             )
             
-            item.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 0, trailing: 3)
 
-            let firstGroup = NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .absolute(510)
-                ),
-                subitem: item,
-                count: 1
-            )
+          
             
             let secondGroup = NSCollectionLayoutGroup.horizontal(
                 layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .absolute(530)
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .fractionalWidth(1)
                 ),
-                subitem: firstGroup,
+                subitem: item,
                 count: 1
             )
 
@@ -435,6 +467,34 @@ class HomeViewController: UIViewController {
             section.orthogonalScrollingBehavior = .continuous
             section.boundarySupplementaryItems = supplementaryViews
             return section
+            
+            //team name label
+        case 5:
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
+                )
+            )
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+
+            let firstGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(70)
+                ),
+                subitem: item,
+                count: 1
+            )
+            
+            let section = NSCollectionLayoutSection(group: firstGroup)
+
+            // свойство для горизонтальных групп
+           // section.orthogonalScrollingBehavior = .continuous
+
+            return section
+        
             
         default:
             let item = NSCollectionLayoutItem(
@@ -493,6 +553,8 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     
+    
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let type = sections[section]
         switch type {
@@ -506,7 +568,10 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return 1
         case .newSongs(let model):
             return model.count
+        case .teamNameLabel:
+            return 1
         }
+        
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -585,7 +650,56 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             cell.configure(with: viewModel)
             
             return cell
+            
+        case .teamNameLabel:
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TeamNameCollectionViewCell.identifier, for: indexPath) as! TeamNameCollectionViewCell
+            cell.teamNameLabel.text = "Project MusicExpress by @CodeExpress for Technopark Mail.ru"
+            cell.teamNameLabel.font = .systemFont(ofSize: 13, weight: .light)
+            cell.teamNameLabel.numberOfLines = 0
+            cell.teamNameLabel.frame = CGRect(x: 2, y: 0, width: 300, height: 100)
+            
+            
+            
+            return cell
         }
     }
     
+   
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let section = sections[indexPath.section]
+        
+        switch section {
+        
+        case .groupOfTheDay:
+            break
+        case .albums:
+            let album = albums[indexPath.row]
+            let vc = AlbumViewController(album: album)
+            vc.title = album.title
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+            
+            break
+        case .newSongs:
+            break
+        case .topTracks:
+            break
+        case .topAlbums:
+            
+            let album = topAlbums[indexPath.row]
+            let vc = AlbumViewController(album: album)
+            vc.title = album.title
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+            break
+        case .teamNameLabel:
+            break
+            
+    }
+    
+}
 }
