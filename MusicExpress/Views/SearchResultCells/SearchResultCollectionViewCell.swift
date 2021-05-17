@@ -74,10 +74,11 @@ class SearchResultCollectionViewCell: UITableViewCell {
         secondLabel.text = viewModel.artist
         print(viewModel.artist)
         do {
-            if let image = try APICaller.shared.getAlbumImage(path: viewModel.imageUrl) {
-                iconImageView.image = UIImage(data: image)
+            guard let url = URL(string: "https://musicexpress.sarafa2n.ru" + viewModel.imageUrl) else {
                 return
             }
+            
+            iconImageView.sd_setImage(with: url, completed: nil)
         } catch {}
     }
 }
