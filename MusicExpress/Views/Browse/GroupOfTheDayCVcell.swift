@@ -48,15 +48,12 @@ class GroupOfTheDayCVcell: UICollectionViewCell {
     }()
     
     private let playRandomTrackButton : UIButton = {
-        
         let button = UIButton()
         
         button.setTitle("Случайный трек", for: .normal)
-        
         button.backgroundColor = UIColor(red: 255, green: 0, blue: 82, alpha: 1)
         button.titleLabel?.font = .systemFont(ofSize: 15)
      
-        
         return button
     }()
     
@@ -67,8 +64,6 @@ class GroupOfTheDayCVcell: UICollectionViewCell {
         contentView.addSubview(groupOfDayLabel)
         contentView.addSubview(nameOfGroupOfDay)
         contentView.addSubview(playRandomTrackButton)
-
-        
        // contentView.addSubview(ArtistNameLabel)
     }
     

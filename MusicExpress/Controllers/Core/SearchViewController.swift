@@ -10,11 +10,10 @@ import UIKit
 // View окна Search
 
 
-class SearchViewController: UIViewController, UISearchResultsUpdating,UISearchBarDelegate {
+class SearchViewController: UIViewController, UISearchResultsUpdating, UISearchBarDelegate {
     
     
     let searchController : UISearchController = {
-       
         let vc = UISearchController(searchResultsController: SearchResultViewController())
         vc.searchBar.placeholder = "Песни, Альбомы и Исполнители..."
         vc.searchBar.searchBarStyle = .minimal
@@ -72,7 +71,6 @@ class SearchViewController: UIViewController, UISearchResultsUpdating,UISearchBa
     */
 
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
@@ -82,11 +80,11 @@ class SearchViewController: UIViewController, UISearchResultsUpdating,UISearchBa
         view.addSubview(letsSearchImage)
         view.addSubview(letsSearchLabel)
         
+        // collectionView.delegate = self
+        // collectionView.dataSource = self
     
      //   view.addSubview(collectionView)
      //   collectionView.register(UICollectionViewCell.self,forCellWithReuseIdentifier: "cell")
-    //    collectionView.delegate = self
-    //    collectionView.dataSource = self
     }
     
     override func viewDidLayoutSubviews() {
@@ -98,7 +96,7 @@ class SearchViewController: UIViewController, UISearchResultsUpdating,UISearchBa
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let resultsController = searchController.searchResultsController as? SearchResultViewController, let query = searchBar.text,
-              !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+            !query.trimmingCharacters(in: .whitespaces).isEmpty else {
             return
         }
         print(query)
@@ -107,34 +105,25 @@ class SearchViewController: UIViewController, UISearchResultsUpdating,UISearchBa
         
         
        APICaller.shared.search(with: query) { result in
-        DispatchQueue.main.async {
-               switch result {
-               case .success(let results):
-                self.Searched = results
-                resultsController.update(with: results)
-                    print("111")
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let results):
+                    self.Searched = results
+                    resultsController.update(with: results)
                 case .failure(let error):
-                  print(error.localizedDescription)
-              
+                    print(error.localizedDescription)
+                }
             }
         }
-                
-        }
-        
     }
     
 
     func updateSearchResults(for searchController: UISearchController) {
        
-        }
-        
-    
-
+    }
 }
 
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }

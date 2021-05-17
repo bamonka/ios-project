@@ -122,13 +122,15 @@ final class APICaller {
         completion(URLRequest(url: url))
     }
     
-    
-    
-    //https://musicexpress.sarafa2n.ru/api/v1/search?query=thunder&offset=0&limit=20
-    //
-    
-    public func search(with query:String, completion: @escaping (Result<SearchReslutResponse, Error>)-> Void){
-        createRequest(with: URL(string: Constans.domen + Constans.api + "search?query=\(query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")&offset=0&limit=20")! , method: .Get) { (request) in
+    public func search(with query:String, completion: @escaping (Result<SearchReslutResponse, Error>)-> Void) {
+        let queryPercentEncoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        
+        createRequest(
+            with: getAPIURLFromPath(
+                path: "search?query=\(queryPercentEncoded)&offset=0&limit=20"
+            )!,
+            method: .Get
+        ) { (request) in
             print(request.url?.absoluteString ?? "wrong request")
             let task = URLSession.shared.dataTask(with: request) {data, _, error in
                 guard let data = data, error == nil else {
@@ -137,23 +139,15 @@ final class APICaller {
                 }
             
                 do {
-                //    let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                //    print(json)
-                    
                     let decoded = try JSONDecoder().decode(SearchReslutResponse.self, from: data)
-                   print(decoded.artists![0].name)
                     completion(.success(decoded))
-                    
-                    }
-                catch {
-                    print(error)
+                } catch {
                     completion(.failure(error))
                 }
             
-                }
+            }
             task.resume()
         }
-        
     }
     
     public func getGroupOfDay(completion: @escaping (Result<Song, Error>) -> Void) {
