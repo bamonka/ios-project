@@ -23,9 +23,16 @@ class SearchResultCollectionViewCell: UITableViewCell {
         return imageView
     }()
     
+    private let secondLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 1
+        return label
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(label)
+        contentView.addSubview(secondLabel)
         contentView.addSubview(iconImageView)
         contentView.clipsToBounds = true
         accessoryType = .disclosureIndicator
@@ -37,18 +44,35 @@ class SearchResultCollectionViewCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        iconImageView.frame = CGRect(x: 10, y: 0, width: contentView.height, height: contentView.height)
-        label.frame = CGRect(x: iconImageView.right + 10, y: 0, width: contentView.width, height: contentView.height)
+        iconImageView.frame = CGRect(x: 10, y: 2.5, width: contentView.height - 5, height: contentView.height - 5)
+        iconImageView.layer.cornerRadius = (contentView.height - 5) / 2
+        iconImageView.layer.masksToBounds = true
+        secondLabel.frame = CGRect(
+            x: iconImageView.right + 10,
+            y: 17,
+            width: contentView.width - iconImageView.right - 15,
+            height: contentView.height - 10
+        )
+        secondLabel.textColor = .gray
+        label.frame = CGRect(
+            x: iconImageView.right + 10,
+            y: 0,
+            width: contentView.width - iconImageView.right - 15,
+            height: contentView.height - 10
+        )
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         iconImageView.image = nil
         label.text = nil
+        secondLabel.text = nil
     }
     
     func configure(width viewModel: SearchResultDefaultTableVeiewCellViewModel) {
         label.text = viewModel.title
+        secondLabel.text = viewModel.artist
+        print(viewModel.artist)
         do {
             if let image = try APICaller.shared.getAlbumImage(path: viewModel.imageUrl) {
                 iconImageView.image = UIImage(data: image)

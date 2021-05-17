@@ -10,4 +10,5 @@ import Foundation
 struct SearchResultDefaultTableVeiewCellViewModel {
     let title: String
     let imageUrl: String
+    let artist: String
 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 struct SearchSection {
     let title: String
@@ -77,23 +78,27 @@ class SearchResultViewController: UIViewController, UITableViewDelegate, UITable
         
         var viewModel = SearchResultDefaultTableVeiewCellViewModel(
             title: "",
-            imageUrl: ""
+            imageUrl: "",
+            artist: ""
         )
 
         if section.title == "Artists" {
             viewModel = SearchResultDefaultTableVeiewCellViewModel(
                 title: result.name ?? "",
-                imageUrl: result.poster ?? ""
+                imageUrl: result.poster ?? "",
+                artist: ""
             )
         } else if section.title == "Albums" {
             viewModel = SearchResultDefaultTableVeiewCellViewModel(
                 title: result.title ?? "",
-                imageUrl: result.poster ?? ""
+                imageUrl: result.poster ?? "",
+                artist: result.artist_name ?? ""
             )
         } else if section.title == "Tracks" {
             viewModel = SearchResultDefaultTableVeiewCellViewModel(
                 title: result.title ?? "",
-                imageUrl: result.album_poster ?? ""
+                imageUrl: result.album_poster ?? "",
+                artist: result.artist ?? ""
             )
         }
         
