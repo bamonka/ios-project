@@ -30,10 +30,13 @@ final class APICaller {
     }
     
     
-    //https://musicexpress.sarafa2n.ru/api/v1/albums/5 url Альбома
     
-    public func getAlbumDetails(for album: Song?,completion: @escaping(Result<Song, Error>) -> Void) {
-        createRequest(with: getAPIURLFromPath(path: "albums/" + String(((album?.id!)!))),
+// Получение информации об Артисте
+
+  //  https://musicexpress.sarafa2n.ru/api/v1/artists/4/tracks url Артиста
+    
+    public func getArtistInfoForHeader (for artist: Song?,completion: @escaping (Result<Song,Error>)-> Void) {
+        createRequest(with: getAPIURLFromPath(path: "artists/" + String(artist?.artist_id ?? 0)),
                       method: .Get
                      ) { request in
             let task = URLSession.shared.dataTask(with: request) { data, _, error in
@@ -54,8 +57,37 @@ final class APICaller {
         }
     }
     
-    public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
+    
+    
+    
+    
+    
+    public func getArtistsTracks (artist_id:Int,completion: @escaping (Result<[Song], Error>) -> Void) {
+        getSongs(url: getAPIURLFromPath(path: "artists/" + String(artist_id) + "/" + "tracks"), completion: completion)
         
+        
+    }
+    
+    public func getArtistsAlbums(artist_id:Int,completion: @escaping (Result<ArtistAlbums, Error>) -> Void) {
+
+        createRequest(with: getAPIURLFromPath(path: "artists/" + String(artist_id) + "/" + "albums"),
+                      method: .Get) { request in
+   let task = URLSession.shared.dataTask(with: request) { data, _, error in
+       guard let data = data, error == nil else {
+           completion(.failure(APIError.faileedToGetData))
+           return
+       }
+       
+       do {
+           let decoded = try JSONDecoder().decode(ArtistAlbums.self, from: data)
+           completion(.success(decoded))
+       } catch {
+           completion(.failure(error))
+       }
+   }
+             
+task.resume()
+        }
     }
     
     public func getDescription(artist_id:Int,completion: @escaping (Result<Song,Error>)-> Void) {
@@ -78,8 +110,8 @@ final class APICaller {
                     do {
                         let decoded = try JSONDecoder().decode(Song.self, from: data)
                         completion(.success(decoded))
-                        print(decoded.description)
-                        print(request)
+                        
+                        
                     } catch {
                         completion(.failure(error))
                     }
@@ -89,12 +121,82 @@ final class APICaller {
         }
         }
     
+    // Получение деталей альбома + GetDescription
+    //https://musicexpress.sarafa2n.ru/api/v1/albums/5   url альбома
+
+    
+    public func getAlbumDetails(for album: Song?,completion: @escaping(Result<Song, Error>) -> Void) {
+        createRequest(with: getAPIURLFromPath(path: "albums/" + String(album?.id ?? 0)),
+                      method: .Get
+                     ) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+                
+                do {
+                    let decoded = try JSONDecoder().decode(Song.self, from: data)
+                    completion(.success(decoded))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+                      
+        task.resume()
+        }
+    }
+    
+    
+    
+    
+    public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
+        
+    }
+    
+    
+    // Получение всего на главном экране Home
+    
+    
+    
+    public func getGroupOfDay(completion: @escaping (Result<Song, Error>) -> Void) {
+        createRequest(with: URL(string: Constans.domen + Constans.api + "artist/day")! , method: .Get) {
+            request in
+            
+                let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+                    if error != nil {
+                        completion(.failure(APIError.faileedToGetData))
+                        return
+                    }
+                   
+                    guard let data = data else {
+                        completion(.failure(APIError.faileedToGetData))
+                        return
+                    }
+
+                    DispatchQueue.main.async {
+                        do {
+                            let decoded = try JSONDecoder().decode(Song.self, from: data)
+                            completion(.success(decoded))
+                        } catch {
+                            completion(.failure(error))
+                        }
+                    }
+                }
+                task.resume()
+            
+        }
+    }
+    
+    
+    // общая функция получения
     
     private func getSongs(url: URL, completion: @escaping (Result<[Song], Error>) -> Void) {
         createRequest(
             with: url,
             method: HTTPMethod.Get
         ) { request in
+           
             let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
                 if error != nil {
                     completion(.failure(APIError.faileedToGetData))
@@ -154,15 +256,8 @@ final class APICaller {
         case Post
     }
     
-    //https://musicexpress.sarafa2n.ru/api/v1/albums/5   url альбома
     
-    public func getAlbumImage(path: String) throws -> Data? {
-        if let url = getURLFromPath(path: path) {
-            return try Data(contentsOf: url)
-        }
-        
-        return nil
-    }
+    
     
     private func getURLFromPath(path: String) -> URL? {
         return URL(string: Constans.domen + path)
@@ -180,6 +275,12 @@ final class APICaller {
         // set some http headers
         completion(URLRequest(url: url))
     }
+    
+    
+    
+    
+    // поиск
+    
     
     public func search(with query:String, completion: @escaping (Result<SearchReslutResponse, Error>)-> Void) {
         let queryPercentEncoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
@@ -209,33 +310,6 @@ final class APICaller {
         }
     }
     
-    public func getGroupOfDay(completion: @escaping (Result<Song, Error>) -> Void) {
-        createRequest(with: URL(string: Constans.domen + Constans.api + "artist/day")! , method: .Get) {
-            request in
-            
-                let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
-                    if error != nil {
-                        completion(.failure(APIError.faileedToGetData))
-                        return
-                    }
-                   
-                    guard let data = data else {
-                        completion(.failure(APIError.faileedToGetData))
-                        return
-                    }
-
-                    DispatchQueue.main.async {
-                        do {
-                            let decoded = try JSONDecoder().decode(Song.self, from: data)
-                            completion(.success(decoded))
-                        } catch {
-                            completion(.failure(error))
-                        }
-                    }
-                }
-                task.resume()
-            
-        }
-    }
+ 
 }
 

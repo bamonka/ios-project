@@ -72,7 +72,7 @@ class TopTracksCollectionViewCell: UICollectionViewCell {
         
         trackImage.frame = CGRect(x: 10, y: (contentView.bottom+contentView.top)/2 - 20, width: 40 , height: 40)
         artistLabel.frame = CGRect(x: 55, y: 15, width: artistLabel.width, height: 20)
-        trackNameLabel.frame = CGRect(x: 55, y: 30, width: trackNameLabel.width, height: 20)
+        trackNameLabel.frame = CGRect(x: 55, y: 30, width: trackNameLabel.intrinsicContentSize.width, height: 20)
         durationLabel.frame = CGRect(x: contentView.right - 35, y: (contentView.top+contentView.bottom)/2 - 10, width: durationLabel.width, height: 20)
         
         

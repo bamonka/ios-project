@@ -7,6 +7,17 @@
 
 import Foundation
 
+// приходит с бэка и декодится в это
+
+struct ArtistAlbums: Codable {
+    
+    let albums : [Song]?
+    let artist : Song?
+    
+}
+
+
+
 struct Track: Codable {
     let album_id: Int?
     let album_poster: String?
@@ -36,7 +47,6 @@ struct Track: Codable {
         
     }
 }
-// приходит с бэка и декодится в это
 struct Song: Codable {
     
     let duration: Int?

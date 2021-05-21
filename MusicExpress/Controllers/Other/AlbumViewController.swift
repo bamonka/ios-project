@@ -103,7 +103,7 @@ class AlbumViewController: UIViewController {
                             case .success(let Gotdescription):
                                 
                                 self?.descriptionText = Gotdescription
-                                print("Got description", self?.descriptionText?.description)
+                               
                                  
                                
                             case.failure(let error):
@@ -119,6 +119,18 @@ class AlbumViewController: UIViewController {
                 }
         }
       }
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShare))
+        
+    }
+    @objc private func didTapShare () {
+        print("current album share")
+        let vc = UIActivityViewController(
+            activityItems: ["Foo"],
+            applicationActivities: []
+        )
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(vc, animated: true)
         
     }
     
@@ -172,6 +184,7 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
             description:  descriptionText?.description ?? "",
             artist_id: album?.artist_id ?? 0)
         header.configure(with: headerViewModel)
+        header.delegate = self
         return header
          
         
@@ -180,5 +193,11 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         // play song
+    }
+}
+
+extension AlbumViewController: AlbumHeaderCollectionReusableViewDelegate {
+    func albumHeaderCollectionReusableViewDidTapPlayAll(_ header: AlbumHeaderCollectionReusableView) {
+        print("Playing all")
     }
 }

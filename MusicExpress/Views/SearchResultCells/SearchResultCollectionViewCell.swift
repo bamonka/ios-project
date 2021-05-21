@@ -72,13 +72,13 @@ class SearchResultCollectionViewCell: UITableViewCell {
     func configure(width viewModel: SearchResultDefaultTableVeiewCellViewModel) {
         label.text = viewModel.title
         secondLabel.text = viewModel.artist
-        print(viewModel.artist)
-        do {
+        //print(viewModel.artist)
+        
             guard let url = URL(string: "https://musicexpress.sarafa2n.ru" + viewModel.imageUrl) else {
                 return
             }
             
             iconImageView.sd_setImage(with: url, completed: nil)
-        } catch {}
+        
     }
 }

@@ -13,8 +13,14 @@ struct SearchSection {
     let results: [Song]
 }
 
+
+protocol SearchResultViewControllerDelegate: AnyObject {
+    func showResult(_ controller: UIViewController)
+}
+
 class SearchResultViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    weak var delegate: SearchResultViewControllerDelegate?
     private var sections: [SearchSection] = []
     
     private let tableView : UITableView = {
@@ -24,17 +30,18 @@ class SearchResultViewController: UIViewController, UITableViewDelegate, UITable
                            forCellReuseIdentifier: SearchResultCollectionViewCell.identifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.isHidden = true
-
         return tableView
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .lightGray
+       // view.backgroundColor = .lightGray
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
     }
+    
+    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -110,4 +117,39 @@ class SearchResultViewController: UIViewController, UITableViewDelegate, UITable
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return self.sections[section].title
     }
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        
+        let section = self.sections[indexPath.section]
+        let result = section.results[indexPath.row]
+        
+        switch section.title {
+        case "Artists":
+            let artist = result
+            let vc = ArtistViewController(artist: artist)
+            vc.title = artist.name
+            vc.navigationItem.largeTitleDisplayMode = .never
+            delegate?.showResult(vc)
+            break
+        case "Albums":
+            let album = result
+            let vc = AlbumViewController(album: album)
+            vc.title = album.title
+            delegate?.showResult(vc)
+            vc.navigationItem.largeTitleDisplayMode = .never
+
+            
+        case "Tracks":
+            //play Music
+            
+            break
+        default:
+            break
+
+        }
+    }
 }
+

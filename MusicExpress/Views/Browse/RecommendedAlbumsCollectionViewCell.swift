@@ -56,7 +56,7 @@ class RecommendedAlbumsCollectionViewCell: UICollectionViewCell {
         let imageSize: CGFloat = contentView.height-50
         albumCoverImage.frame = CGRect(x: 0, y: 0, width: contentView.width , height: imageSize)
         
-        albumNameLabel.frame = CGRect(x: albumCoverImage.left,
+        albumNameLabel.frame = CGRect(x: albumCoverImage.left + 5,
                                       y: albumCoverImage.bottom+2,
                                       width: contentView.width,
                                       height: albumNameLabel.height)

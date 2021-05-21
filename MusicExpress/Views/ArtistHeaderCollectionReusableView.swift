@@ -1,24 +1,23 @@
 //
-//  AlbumHeaderCollectionReusableView.swift
+//  ArtistHeaderCollectionReusableView.swift
 //  MusicExpress
 //
-//  Created by Антон Шарин on 17.05.2021.
+//  Created by Антон Шарин on 20.05.2021.
 //
 
 import UIKit
-import SDWebImage
 
 
-
-protocol AlbumHeaderCollectionReusableViewDelegate : AnyObject {
-    func albumHeaderCollectionReusableViewDidTapPlayAll(_ header : AlbumHeaderCollectionReusableView)
+protocol ArtistHeaderCollectionReusableViewDelegate : AnyObject {
+    func artistHeaderCollectionReusableViewDidTapPlayAll(_ header : ArtistHeaderCollectionReusableView)
 }
 
-
-final class AlbumHeaderCollectionReusableView: UICollectionReusableView {
-    static let identifier = "AlbumHeaderCollectionReusableView"
+final class ArtistHeaderCollectionReusableView: UICollectionReusableView {
     
-    weak var delegate : AlbumHeaderCollectionReusableViewDelegate?
+    static let identifier = "ArtistHeaderCollectionReusableView"
+        
+    weak var delegate : ArtistHeaderCollectionReusableViewDelegate?
+
     
     private let atristNameLabel: UILabel = {
         let label = UILabel()
@@ -29,14 +28,7 @@ final class AlbumHeaderCollectionReusableView: UICollectionReusableView {
         
     }()
     
-    private let albumNameLabel: UILabel = {
-        let label = UILabel()
-        
-        label.font = .systemFont(ofSize: 22, weight: .semibold)
-        return label
-        
-        
-    }()
+    
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
@@ -47,7 +39,14 @@ final class AlbumHeaderCollectionReusableView: UICollectionReusableView {
         
     }()
     
-    private let albumImage : UIImageView = {
+    private let artistImage : UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(systemName: "photo")
+        return imageView
+    }()
+    
+    private let artistAvatar : UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(systemName: "photo")
@@ -65,14 +64,15 @@ final class AlbumHeaderCollectionReusableView: UICollectionReusableView {
         return button
     }()
     
+    
     // INIT
     
     
     override init(frame: CGRect) {
         super .init(frame: frame)
         
-        addSubview(albumImage)
-        addSubview(albumNameLabel)
+        addSubview(artistImage)
+        addSubview(artistAvatar)
         addSubview(descriptionLabel)
         addSubview(atristNameLabel)
         addSubview(playAllButton)
@@ -85,24 +85,26 @@ final class AlbumHeaderCollectionReusableView: UICollectionReusableView {
     
     @objc private func didTapPlayAll () {
         //
-        delegate?.albumHeaderCollectionReusableViewDidTapPlayAll(self)
+        delegate?.artistHeaderCollectionReusableViewDidTapPlayAll(self)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         let imageSize:CGFloat = height/1.7
-        albumImage.frame = CGRect(x: (width - imageSize)/2, y: 10, width: imageSize, height: imageSize)
+        artistImage.frame = CGRect(x: (width - imageSize)/2, y: 10, width: imageSize, height: imageSize)
         
-        atristNameLabel.frame = CGRect(x: 10, y: albumImage.bottom - 5, width: width - 20, height: 44)
-        albumNameLabel.frame = CGRect(x: 10, y: atristNameLabel.bottom - 15, width: width - 20, height: 44)
+        atristNameLabel.frame = CGRect(x: 10, y: artistImage.bottom - 5, width: width - 20, height: 44)
+        artistAvatar.frame = CGRect(x: 10, y: atristNameLabel.bottom - 15, width: width - 20, height: 44)
         descriptionLabel.textAlignment = .natural
-        descriptionLabel.frame = CGRect(x: 10, y: albumNameLabel.bottom - 15, width: width - 20, height: 150)
-        playAllButton.frame = CGRect(x: width - 100, y: height - 100, width: 50, height: 50)
+        descriptionLabel.frame = CGRect(x: 10, y: artistAvatar.bottom - 15, width: width - 20, height: 150)
+        playAllButton.frame = CGRect(x: width - 100, y: artistAvatar.top, width: 50, height: 50)
         
     }
     
-    func configure(with viewModel:AlbumHeaderCellViewModel) {
-        albumNameLabel.text = viewModel.albumName
+    func configure(with viewModel:ArtistHeaderCellViewModel) {
+        
+        atristNameLabel.text = viewModel.artistName
+        
         
       APICaller.shared.getDescription(artist_id: viewModel.artist_id ?? 0, completion: { result in
              DispatchQueue.main.async {
@@ -121,16 +123,20 @@ final class AlbumHeaderCollectionReusableView: UICollectionReusableView {
         )
         atristNameLabel.text = viewModel.artistName
         
-        guard let url = URL(string: "https://musicexpress.sarafa2n.ru" + viewModel.poster) else {
+        guard let urlImage = URL(string: "https://musicexpress.sarafa2n.ru" + viewModel.poster) else {
             return
         }
         
-        albumImage.sd_setImage(with: url, completed: nil)
+        artistImage.sd_setImage(with: urlImage, completed: nil)
+        
+        guard let urlAvatar = URL(string: "https://musicexpress.sarafa2n.ru" + viewModel.avatar) else {
+            return
+        }
+        
+        artistAvatar.sd_setImage(with: urlAvatar, completed: nil)
 
         
         
     }
-    
-   
     
 }

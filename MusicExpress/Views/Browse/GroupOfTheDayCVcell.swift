@@ -27,7 +27,7 @@ class GroupOfTheDayCVcell: UICollectionViewCell {
     private let groupOfDayLabel: UILabel = {
         
         let label = UILabel()
-        label.text = "Группа дня"
+      //  label.text = "Группа дня"
        // label.backgroundColor = UIColor(red: 18, green: 20, blue: 22, alpha: 1)
         label.textColor = .white
         label.font = .systemFont(ofSize: 20, weight: .bold)

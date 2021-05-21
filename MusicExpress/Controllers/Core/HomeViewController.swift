@@ -33,10 +33,11 @@ enum BrowseSectionType {
             return "Популярные альбомы"
             
         case .groupOfTheDay:
-            return ""
+            return "Группа дня"
             
         case .newSongs:
             return "Новые релизы"
+            
         case .teamNameLabel:
         return ""
         
@@ -227,7 +228,8 @@ class HomeViewController: UIViewController {
         sections.append(.groupOfTheDay(viewModels: groupOfDay.compactMap({
             return groupOfDayCellViewModel(
                 name: $0.name ?? "",
-                poster: $0.poster ?? "")
+                poster: $0.poster ?? "",
+                id: $0.id ?? 0)
             
         })))
         sections.append(.albums(viewModels: albums.compactMap({
@@ -252,7 +254,7 @@ class HomeViewController: UIViewController {
                 duration: $0.duration ?? 0,
                 artist: $0.artist ?? "",
                 album_poster: $0.album_poster ?? "",
-                artist_id: 0)
+                artist_id: $0.artist_id ?? 0)
             
         })))
         
@@ -345,6 +347,8 @@ class HomeViewController: UIViewController {
 
             // свойство для горизонтальных групп
            // section.orthogonalScrollingBehavior = .continuous
+
+            section.boundarySupplementaryItems = supplementaryViews
 
             return section
             
@@ -675,8 +679,15 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch section {
         
         case .groupOfTheDay:
+            let artist = groupOfDay[indexPath.row]
+            let vc = ArtistViewController(artist: artist)
+            vc.title = artist.name
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+            
             break
         case .albums:
+            
             let album = albums[indexPath.row]
             let vc = AlbumViewController(album: album)
             vc.title = album.title

@@ -26,7 +26,7 @@ class SearchViewController: UIViewController, UISearchResultsUpdating, UISearchB
         let imageView = UIImageView()
         let image = UIImage(named: "letsFindSomeThingImage.png")
         imageView.image = image
-        imageView.frame = CGRect(x: 200, y: 200, width: 200, height: 200)
+        imageView.frame = CGRect(x: 50, y: 200, width: 250, height: 200)
         
         return imageView
     }()
@@ -92,23 +92,25 @@ class SearchViewController: UIViewController, UISearchResultsUpdating, UISearchB
       //  collectionView.frame = view.bounds
     }
     
-    var Searched : SearchReslutResponse?
+    var searched : SearchReslutResponse?
+    
+    
+    
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let resultsController = searchController.searchResultsController as? SearchResultViewController, let query = searchBar.text,
             !query.trimmingCharacters(in: .whitespaces).isEmpty else {
             return
         }
-        print(query)
         //API CALLER
         //SEARCH
-        
+        resultsController.delegate = self
         
        APICaller.shared.search(with: query) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let results):
-                    self.Searched = results
+                    self.searched = results
                     resultsController.update(with: results)
                 case .failure(let error):
                     print(error.localizedDescription)
@@ -119,8 +121,43 @@ class SearchViewController: UIViewController, UISearchResultsUpdating, UISearchB
     
 
     func updateSearchResults(for searchController: UISearchController) {
-       
+        guard let resultsController = searchController.searchResultsController as? SearchResultViewController, let query = searchController.searchBar.text,
+            !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+            return
+        }
+        //API CALLER
+        //SEARCH
+        resultsController.delegate = self
+        
+        var emptyResults: SearchReslutResponse?
+        
+       APICaller.shared.search(with: query) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let results):
+                    self.searched = results
+                    if results.albums == nil,
+                       results.artists == nil,
+                       results.tracks == nil {
+                        print("No found items")
+                       // resultsController.update(with: emptyResults)
+                    } else {
+                        resultsController.update(with: results)
+                    }
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
+}
+
+extension SearchViewController: SearchResultViewControllerDelegate{
+    func showResult(_ controller: UIViewController) {
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    
 }
 
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -137,4 +174,10 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         cell.backgroundColor = .systemGreen
         return cell
     }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+    }
 }
+
+
+

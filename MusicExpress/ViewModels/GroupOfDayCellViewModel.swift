@@ -12,5 +12,6 @@ struct groupOfDayCellViewModel {
     
     let name:String
     let poster:String
+    let id : Int?
     
 }
