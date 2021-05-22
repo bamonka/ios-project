@@ -11,8 +11,8 @@ class WelcomeViewController: UIViewController {
     
     private let signInButton: UIButton = {
         let button = UIButton()
+
         button.backgroundColor = .white
-        
         button.setTitle("Sign In", for: .normal)
         button.setTitleColor(.blue, for: .normal)
 
@@ -47,7 +47,6 @@ class WelcomeViewController: UIViewController {
             }
         }
         vc.navigationItem.largeTitleDisplayMode = .never
-        
         navigationController?.pushViewController(vc, animated: true)
     }
     

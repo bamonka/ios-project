@@ -43,6 +43,8 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     private func signOutTapped() {
+        AuthManager.shared.setAccessToken(token: "")
+        navigationController?.setViewControllers([WelcomeViewController()], animated: true)
         
     }
     

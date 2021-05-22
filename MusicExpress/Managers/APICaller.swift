@@ -27,6 +27,7 @@ final class APICaller {
     
     enum APIError: Error {
         case faileedToGetData
+        case wrongLoginOrPassword
     }
     
     
@@ -56,11 +57,6 @@ final class APICaller {
         task.resume()
         }
     }
-    
-    
-    
-    
-    
     
     public func getArtistsTracks (artist_id:Int,completion: @escaping (Result<[Song], Error>) -> Void) {
         getSongs(url: getAPIURLFromPath(path: "artists/" + String(artist_id) + "/" + "tracks"), completion: completion)
@@ -146,9 +142,6 @@ task.resume()
         task.resume()
         }
     }
-    
-    
-    
     
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
         
@@ -255,10 +248,7 @@ task.resume()
         case Get
         case Post
     }
-    
-    
-    
-    
+
     private func getURLFromPath(path: String) -> URL? {
         return URL(string: Constans.domen + path)
     }
@@ -272,15 +262,60 @@ task.resume()
         method: HTTPMethod,
         completion: @escaping (URLRequest) -> Void
     ) {
-        // set some http headers
-        completion(URLRequest(url: url))
+        var request = URLRequest(url: url)
+        if method == .Post {
+            request.setValue("application/json;charset=utf-8", forHTTPHeaderField: "content-Type")
+            request.httpMethod = "POST"
+        }
+
+        let auth = AuthManager.shared
+        if auth.isSignedIn {
+            request.setValue(auth.getAccessToken(), forHTTPHeaderField: "cookie")
+        }
+
+        completion(request)
     }
     
-    
-    
-    
+    public func login(login: String, password: String, completion: @escaping (Result<String, Error>)-> Void) {
+        createRequest(
+            with: getAPIURLFromPath(path: "session"),
+            method: .Post
+        ) { request in
+            var request = request
+            request.httpBody = "{\"login\":\"\(login)\", \"password\":\"\(password)\"}".data(using: .utf8)
+            let task = URLSession.shared.dataTask(with: request) {_, response, error in
+                guard error == nil else {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+
+                guard
+                    let url = response?.url,
+                    let httpResponse = response as? HTTPURLResponse,
+                    let fields = httpResponse.allHeaderFields as? [String: String]
+                else {
+                    return
+                }
+                
+                if httpResponse.statusCode != 200 {
+                    completion(.failure(APIError.wrongLoginOrPassword))
+                }
+                
+                let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields, for: url)
+                HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: nil)
+                for cookie in cookies {
+                    if cookie.name == "code_express_session_id" {
+                        AuthManager.shared.setAccessToken(token: "\(cookie.name)=\(cookie.value)")
+                        completion(.success("OK"))
+                        return
+                    }
+                }
+                completion(.failure(APIError.wrongLoginOrPassword))
+            }
+            task.resume()
+        }
+    }
     // поиск
-    
     
     public func search(with query:String, completion: @escaping (Result<SearchReslutResponse, Error>)-> Void) {
         let queryPercentEncoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""

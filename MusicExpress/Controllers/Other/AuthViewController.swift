@@ -15,9 +15,11 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
         tf.borderStyle = .none
         tf.layer.cornerRadius = 5
         tf.backgroundColor = UIColor(red: 70 / 255, green: 70 / 255, blue: 70 / 255, alpha: 70 / 255)
-        tf.textColor = UIColor(red: 255 / 255, green: 255 / 255, blue: 255 / 255, alpha: 0 / 255)
+        tf.textColor = UIColor(red: 255 / 255, green: 255 / 255, blue: 255 / 255, alpha: 255 / 255)
         tf.font = UIFont.systemFont(ofSize: 17)
         tf.autocorrectionType = .no
+        tf.clearsOnBeginEditing = false
+        tf.autocapitalizationType = .none
 
         var placeholder = NSMutableAttributedString()
         placeholder = NSMutableAttributedString(
@@ -31,12 +33,17 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
         )
 
         tf.attributedPlaceholder = placeholder
-        tf.frame = CGRect(
-            x: 0,
-            y: 0,
-            width: 0,
-            height: 20
+        
+        let paddingView = UIView(
+            frame: CGRect(
+                x: 0,
+                y: 0,
+                width: 10,
+                height: tf.frame.size.height
+            )
         )
+        tf.leftView = paddingView
+        tf.leftViewMode = .always
         
         return tf
     }()
@@ -46,9 +53,12 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
         tf.borderStyle = .none
         tf.layer.cornerRadius = 5
         tf.backgroundColor = UIColor(red: 70 / 255, green: 70 / 255, blue: 70 / 255, alpha: 70 / 255)
-        tf.textColor = UIColor(red: 255 / 255, green: 255 / 255, blue: 255 / 255, alpha: 0 / 255)
+        tf.textColor = UIColor(red: 255 / 255, green: 255 / 255, blue: 255 / 255, alpha: 255 / 255)
         tf.font = UIFont.systemFont(ofSize: 17)
         tf.autocorrectionType = .no
+        tf.clearsOnBeginEditing = false
+        tf.autocapitalizationType = .none
+
 
         var placeholder = NSMutableAttributedString()
         placeholder = NSMutableAttributedString(
@@ -60,14 +70,19 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
                 ]
             )
         )
-
+        
         tf.attributedPlaceholder = placeholder
-        tf.frame = CGRect(
-            x: 0,
-            y: 0,
-            width: 0,
-            height: 20
+        
+        let paddingView = UIView(
+            frame: CGRect(
+                x: 0,
+                y: 0,
+                width: 10,
+                height: tf.frame.size.height
+            )
         )
+        tf.leftView = paddingView
+        tf.leftViewMode = .always
         
         return tf
     }()
@@ -85,9 +100,7 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
         )
         
         button.setAttributedTitle(attributedString, for: .normal)
-        
         button.backgroundColor = UIColor(red: 70 / 255, green: 70 / 255, blue: 70 / 255, alpha: 70 / 255)
-
         button.layer.cornerRadius = 5
         button.layer.borderWidth = 1
         
@@ -98,14 +111,17 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
             alpha: 4 / 10
         )
         
-        button.frame = CGRect(
-            x: 0,
-            y: 0,
-            width: 0,
-            height: 20
-        )
-        
         return button
+    }()
+    
+    private let messageLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.font = .systemFont(ofSize: 13,weight: .bold)
+        label.numberOfLines = 1
+        label.textColor = .red
+
+        return label
     }()
     
     public var completionHandler: ((Bool) -> Void)?
@@ -122,17 +138,10 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
             x: 20,
             y: view.height / 2,
             width: view.width - 40,
-            height: 210
+            height: 150
         )
         
-        /* webView.navigationDelegate = self
-        view.addSubview(webView)
-        
-        guard let url = AuthManager.shared.signInUrl else {
-            return
-        }
-        
-        webView.load(URLRequest(url: url))*/
+        loginButton.addTarget(self, action: #selector(didTapLogin), for: .touchUpInside)
     }
     
     override func viewDidLayoutSubviews() {
@@ -140,21 +149,39 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
     }
     
     func mainStackView() -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [login, password, loginButton])
+        let stackView = UIStackView(arrangedSubviews: [messageLabel, login, password, loginButton])
         stackView.axis = .vertical
         stackView.distribution = .fillProportionally
         stackView.spacing = 10
         
+        
         return stackView
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    @objc func didTapLogin() {
+        UIView.animate(
+            withDuration: 0.1,
+            animations: {
+                self.loginButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+            },
+            completion: { _ in
+                UIView.animate(withDuration: 0.1) {
+                    self.loginButton.transform = CGAffineTransform.identity
+                }
+            }
+        )
+        APICaller.shared.login(login: login.text ?? "", password: password.text ?? "") { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let ok):
+                    self.navigationController?.setViewControllers([TabBarViewController()], animated: true)
+                    break
+                case .failure(let error):
+                    print(error)
+                    self.messageLabel.text = "Wrong login or password"
+                    break
+                }
+            }
+        }
     }
-    */
-
 }

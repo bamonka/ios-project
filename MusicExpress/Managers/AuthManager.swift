@@ -10,7 +10,9 @@ import Foundation
 final class AuthManager {
     static let shared = AuthManager()
     
-    private init() {}
+    private init() {
+        accessToken = ""
+    }
     
     public var signInUrl: URL? {
         // let string = "https://musicexpress.sarafa2n.ru/api/v1/session"
@@ -20,23 +22,21 @@ final class AuthManager {
         return URL(string: string)
     }
     
-    var isSignedIn: Bool {
-        return true
+    public func getAccessToken() -> String {
+        return accessToken
     }
     
-    private var accessToken: String? {
-        return nil
+    public func setAccessToken(token: String) {
+        if token != "" {
+            isSignedIn = true
+        } else {
+            isSignedIn = false
+        }
+        accessToken = token
     }
     
-    private var refreshToken: String? {
-        return nil
-    }
+    var isSignedIn: Bool = false
     
-    private var tokenExpirationDate: Date? {
-        return nil
-    }
+    private var accessToken: String
     
-    private var shouldRefreshToken: Bool {
-        return false
-    }
 }
