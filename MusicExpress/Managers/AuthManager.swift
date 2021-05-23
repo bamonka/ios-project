@@ -15,11 +15,11 @@ final class AuthManager {
         csrfToken = UserDefaults.standard.string(forKey: "csrf") ?? ""
 
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
-        print(UserDefaults.standard.string(forKey: "expire"))
+        dateFormatter.dateFormat = dateFormat
+
         experation = dateFormatter.date(from: UserDefaults.standard.string(forKey: "expire") ?? "") ?? Date()
         
-        print(cookie, csrfToken, experation)
+        print(experation, cookie, csrfToken)
     }
     
     public func isSignedIn() -> Bool {
@@ -43,7 +43,7 @@ final class AuthManager {
         expire: Date,
         csrf: String
     ) {
-        experation = expire.addingTimeInterval(4 * 60 * 60)
+        experation = expire
         cookie = token
         csrfToken = csrf
 
@@ -51,10 +51,13 @@ final class AuthManager {
         UserDefaults.standard.setValue(cookie, forKey: "cookie")
         
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+        formatter.dateFormat = dateFormat
         UserDefaults.standard.setValue(formatter.string(from: experation), forKey: "expire")
+        
+        print(experation, cookie, csrfToken)
     }
     
+    private let dateFormat = "yyyy-MM-dd HH:mm:ss Z"
     private var cookie: String
     private var csrfToken: String
     private var experation: Date

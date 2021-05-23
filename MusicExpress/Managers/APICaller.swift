@@ -307,16 +307,11 @@ task.resume()
                 HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: nil)
                 for cookie in cookies {
                     if cookie.name == "code_express_session_id" {
-                        let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-
                         AuthManager.shared.setAccessToken(
                             token: "\(cookie.name)=\(cookie.value)",
-                            expire: dateFormatter.date(from: httpResponse.allHeaderFields["Expires"] as! String)!,
+                            expire: cookie.expiresDate!,
                             csrf: httpResponse.allHeaderFields["x-csrf-token"] as! String
                         )
-                        
-                        print(httpResponse.allHeaderFields["Expires"])
 
                         completion(.success("OK"))
                         return
