@@ -43,9 +43,15 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     private func signOutTapped() {
-        AuthManager.shared.setAccessToken(token: "")
-        navigationController?.setViewControllers([WelcomeViewController()], animated: true)
+        AuthManager.shared.setAccessToken(token: "", expire: Date(), csrf: "")
         
+        let navVC = UINavigationController(rootViewController: WelcomeViewController())
+        navVC.navigationBar.prefersLargeTitles = true
+        navVC.viewControllers.first?.navigationItem.largeTitleDisplayMode = .always
+        
+        let mainAppTabBarVC = navVC
+        mainAppTabBarVC.modalPresentationStyle = .fullScreen
+        present(mainAppTabBarVC, animated: true)
     }
     
     private func viewProfile() {
@@ -87,14 +93,4 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
         let model = sections[section]
         return model.title
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

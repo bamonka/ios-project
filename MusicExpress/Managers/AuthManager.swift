@@ -11,32 +11,51 @@ final class AuthManager {
     static let shared = AuthManager()
     
     private init() {
-        accessToken = ""
+        cookie = UserDefaults.standard.string(forKey: "cookie") ?? ""
+        csrfToken = UserDefaults.standard.string(forKey: "csrf") ?? ""
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+        print(UserDefaults.standard.string(forKey: "expire"))
+        experation = dateFormatter.date(from: UserDefaults.standard.string(forKey: "expire") ?? "") ?? Date()
+        
+        print(cookie, csrfToken, experation)
     }
     
-    public var signInUrl: URL? {
-        // let string = "https://musicexpress.sarafa2n.ru/api/v1/session"
+    public func isSignedIn() -> Bool {
+        if Date() < experation && cookie != "" && csrfToken != "" {
+            return true
+        }
         
-        let string = "https://musicexpress.sarafa2n.ru/login"
-
-        return URL(string: string)
+        return false
     }
     
     public func getAccessToken() -> String {
-        return accessToken
+        return cookie
     }
     
-    public func setAccessToken(token: String) {
-        if token != "" {
-            isSignedIn = true
-        } else {
-            isSignedIn = false
-        }
-        accessToken = token
+    public func getCSRFToken() -> String {
+        return csrfToken
     }
     
-    var isSignedIn: Bool = false
+    public func setAccessToken(
+        token: String,
+        expire: Date,
+        csrf: String
+    ) {
+        experation = expire.addingTimeInterval(4 * 60 * 60)
+        cookie = token
+        csrfToken = csrf
+
+        UserDefaults.standard.setValue(csrfToken, forKey: "csrf")
+        UserDefaults.standard.setValue(cookie, forKey: "cookie")
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+        UserDefaults.standard.setValue(formatter.string(from: experation), forKey: "expire")
+    }
     
-    private var accessToken: String
-    
+    private var cookie: String
+    private var csrfToken: String
+    private var experation: Date
 }

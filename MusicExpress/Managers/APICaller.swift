@@ -263,13 +263,15 @@ task.resume()
         completion: @escaping (URLRequest) -> Void
     ) {
         var request = URLRequest(url: url)
+        let auth = AuthManager.shared
+
         if method == .Post {
-            request.setValue("application/json;charset=utf-8", forHTTPHeaderField: "content-Type")
+            request.setValue("application/json;charset=utf-8", forHTTPHeaderField: "content-type")
+            request.setValue(auth.getCSRFToken(), forHTTPHeaderField: "x-csrf-token")
             request.httpMethod = "POST"
         }
 
-        let auth = AuthManager.shared
-        if auth.isSignedIn {
+        if auth.isSignedIn() {
             request.setValue(auth.getAccessToken(), forHTTPHeaderField: "cookie")
         }
 
@@ -305,7 +307,17 @@ task.resume()
                 HTTPCookieStorage.shared.setCookies(cookies, for: url, mainDocumentURL: nil)
                 for cookie in cookies {
                     if cookie.name == "code_express_session_id" {
-                        AuthManager.shared.setAccessToken(token: "\(cookie.name)=\(cookie.value)")
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+
+                        AuthManager.shared.setAccessToken(
+                            token: "\(cookie.name)=\(cookie.value)",
+                            expire: dateFormatter.date(from: httpResponse.allHeaderFields["Expires"] as! String)!,
+                            csrf: httpResponse.allHeaderFields["x-csrf-token"] as! String
+                        )
+                        
+                        print(httpResponse.allHeaderFields["Expires"])
+
                         completion(.success("OK"))
                         return
                     }
