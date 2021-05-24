@@ -44,7 +44,6 @@ class FavoriteViewController: UIViewController {
         let image = UIImage(named: "No-Favorite-image.png")
         imageView.image = image
         imageView.contentMode = .scaleToFill
-        imageView.frame = CGRect(x: 50, y: 200, width: 250, height: 200)
         
         return imageView
     }()
@@ -55,7 +54,7 @@ class FavoriteViewController: UIViewController {
         label.numberOfLines = 2
         label.font = .systemFont(ofSize: 15, weight: .bold)
         label.textColor = .systemBlue
-        label.frame = CGRect(x: 100, y:420 , width: label.intrinsicContentSize.width, height: 50)
+
         return label
         
     }()
@@ -74,6 +73,20 @@ class FavoriteViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        noFavoriteImage.frame = CGRect(
+            x: (view.width - 300) / 2,
+            y: (view.height - 300) / 4,
+            width: 300,
+            height: 300
+        )
+        
+        letsChangeItLabel.frame = CGRect(
+            x: (view.width - 300) / 2,
+            y: (view.height - 300) / 1.3,
+            width: letsChangeItLabel.intrinsicContentSize.width,
+            height: 50
+        )
         
         view.backgroundColor = .systemBackground
         
