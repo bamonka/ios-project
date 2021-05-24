@@ -158,6 +158,13 @@ final class APICaller {
         }
     }
     
+    public func getFavoriteTracks(completion: @escaping (Result<[Song], Error>) -> Void) {
+        getSongs(
+            url: getAPIURLFromPath(path: "favorite/tracks"),
+            completion: completion
+        )
+    }
+    
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
         
     }
