@@ -241,20 +241,27 @@ class HomeViewController: UIViewController {
         })))
         sections.append(.newSongs(viewModels: newSongs.compactMap({
             return NewSongsCellViewModel(
-            title: $0.title ?? "",
+                id: $0.id ?? 0,
+                title: $0.title ?? "",
                 duration: $0.duration ?? 0,
                 artist: $0.artist ?? "",
-                poster: $0.album_poster ?? "")
-            
+                poster: $0.album_poster ?? "",
+                isLiked: $0.is_liked ?? false,
+                isPlus: $0.is_favorite ?? false
+            )
         })))
         
         sections.append(.topTracks(viewModels: tracks.compactMap({
             return TopSongsCellViewModel(
+                id: $0.id ?? 0,
                 title: $0.title ?? "",
                 duration: $0.duration ?? 0,
                 artist: $0.artist ?? "",
                 album_poster: $0.album_poster ?? "",
-                artist_id: $0.artist_id ?? 0)
+                artist_id: $0.artist_id ?? 0,
+                isLiked: $0.is_liked ?? false,
+                isPlus: $0.is_favorite ?? false
+            )
             
         })))
         

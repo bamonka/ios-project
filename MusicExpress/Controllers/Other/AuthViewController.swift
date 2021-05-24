@@ -174,10 +174,11 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
         APICaller.shared.login(login: login.text ?? "", password: password.text ?? "") { result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(_):
+                case .success(let credentials):
+                    AuthManager.shared.setAccessToken(credentials_: credentials)
                     self.completionHandler?(true)
                     break
-                case .failure(let error):
+                case .failure(_):
                     self.completionHandler?(false)
                     self.messageLabel.text = "Wrong login or password"
                     break

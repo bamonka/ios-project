@@ -63,6 +63,8 @@ struct Song: Codable {
     let artist_id: Int?
     let tracks: [Track]?
     let description: String?
+    let is_liked: Bool?
+    let is_favorite: Bool?
     
   
     

@@ -121,8 +121,7 @@ class SearchResultViewController: UIViewController, UITableViewDelegate, UITable
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        
+
         let section = self.sections[indexPath.section]
         let result = section.results[indexPath.row]
         

@@ -43,7 +43,9 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     private func signOutTapped() {
-        AuthManager.shared.setAccessToken(token: "", expire: Date(), csrf: "")
+        let credentials = LoginCredentials(cookie: "", csrf: "", expired: Date())
+        
+        AuthManager.shared.setAccessToken(credentials_: credentials)
         
         let navVC = UINavigationController(rootViewController: WelcomeViewController())
         navVC.navigationBar.prefersLargeTitles = true

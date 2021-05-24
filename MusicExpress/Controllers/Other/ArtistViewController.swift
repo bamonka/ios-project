@@ -76,23 +76,28 @@ class ArtistViewController: UIViewController {
         collectionViewSongs.backgroundColor = .systemBackground
         
         
-        APICaller.shared.getArtistsTracks(artist_id: artist?.artist_id ?? artist?.id ?? 0) { [weak self] result in
+        APICaller.shared.getArtistsTracks(
+            artist_id: artist?.artist_id ?? artist?.id ?? 0
+        ) { [weak self] result in
             DispatchQueue.main.async {
                 switch result{
                 case .success(let model):
-                    
                     self?.viewModels = model.compactMap({
-                        return TopSongsCellViewModel(title: $0.title ?? "",
-                                                     duration: $0.duration ?? 0,
-                                                     artist: "",
-                                                     album_poster: $0.album_poster ?? "",
-                                                     artist_id: $0.artist_id ?? 0)
+                        return TopSongsCellViewModel(
+                            id: $0.id ?? 0,
+                            title: $0.title ?? "",
+                            duration: $0.duration ?? 0,
+                            artist: "",
+                            album_poster: $0.album_poster ?? "",
+                            artist_id: $0.artist_id ?? 0,
+                            isLiked: $0.is_liked ?? false,
+                            isPlus: $0.is_favorite ?? false
+                        )
                     })
-                    
                     self?.collectionViewSongs.reloadData()
 
                 case .failure(let error):
-                print("failed to get artists tracks,", error)
+                    print("failed to get artists tracks,", error)
                 }
             }
         }

@@ -8,45 +8,55 @@
 import UIKit
 
 class NewSongsCVCell: UICollectionViewCell {
-    
     static let identifier = "NewSongsCVCell"
     
-    
     private let durationLabel : UILabel = {
-        
         let label = UILabel()
         label.text = ""
         label.font = .systemFont(ofSize: 13,weight: .bold)
-       
         label.numberOfLines = 1
+
         return label
-        
     }()
     
     private let artistLabel : UILabel = {
         let label = UILabel()
         label.text = ""
         label.font = .systemFont(ofSize: 10,weight: .bold)
-       
         label.numberOfLines = 1
-        return label
         
+        return label
     }()
     
     private let trackNameLabel : UILabel = {
         let label = UILabel()
         
         return label
-        
     }()
     
     private let trackImage : UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "photo")
         imageView.contentMode = .scaleToFill
+
         return imageView
-        
     }()
+    
+    private let likeButton : UIButton = {
+        let button = UIButton()
+        
+        return button
+    }()
+    
+    private let plusButton : UIButton = {
+        let button = UIButton()
+        
+        return button
+    }()
+    
+    private var isLiked : Bool = false
+    private var isPlus : Bool = false
+    private var trackNumber : Int = 0
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -55,9 +65,11 @@ class NewSongsCVCell: UICollectionViewCell {
         contentView.addSubview(artistLabel)
         contentView.addSubview(durationLabel)
         contentView.addSubview(trackImage)
-
+        contentView.addSubview(likeButton)
+        contentView.addSubview(plusButton)
         
-        // contentView.addSubview(ArtistNameLabel)
+        likeButton.addTarget(self, action: #selector(didTapLike), for: .touchUpInside)
+        plusButton.addTarget(self, action: #selector(didTapPlus), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -71,14 +83,47 @@ class NewSongsCVCell: UICollectionViewCell {
         artistLabel.sizeToFit()
         durationLabel.sizeToFit()
         
+        trackImage.frame = CGRect(
+            x: 10,
+            y: (contentView.bottom+contentView.top)/2 - 20,
+            width: 40 ,
+            height: 40
+        )
+
+        artistLabel.frame = CGRect(
+            x: 55,
+            y: 15,
+            width: artistLabel.width,
+            height: 20
+        )
+
+        trackNameLabel.frame = CGRect(
+            x: 55,
+            y: 30,
+            width: trackNameLabel.intrinsicContentSize.width,
+            height: 20
+        )
         
-        trackImage.frame = CGRect(x: 10, y: (contentView.bottom+contentView.top)/2 - 20, width: 40 , height: 40)
-        artistLabel.frame = CGRect(x: 55, y: 15, width: artistLabel.width, height: 20)
-        trackNameLabel.frame = CGRect(x: 55, y: 30, width: trackNameLabel.width, height: 20)
-        durationLabel.frame = CGRect(x: contentView.right - 35, y: 20, width: durationLabel.width, height: 20)
+        plusButton.frame = CGRect(
+            x: contentView.right - 120,
+            y: (contentView.bottom+contentView.top)/2 - 15,
+            width: 30,
+            height: 30
+        )
         
-        
-        
+        likeButton.frame = CGRect(
+            x: contentView.right - 80,
+            y: (contentView.bottom+contentView.top)/2 - 15,
+            width: 35,
+            height: 30
+        )
+
+        durationLabel.frame = CGRect(
+            x: contentView.right - 35,
+            y: (contentView.top+contentView.bottom)/2 - 10,
+            width: durationLabel.width,
+            height: 20
+        )
     }
     
     override func prepareForReuse() {
@@ -87,37 +132,111 @@ class NewSongsCVCell: UICollectionViewCell {
         artistLabel.text = nil
         durationLabel.text = nil
         trackImage.image = nil
+        trackNumber = 0
     }
     
-    
-    
-    
     func configure(with viewmodel: NewSongsCellViewModel)  {
-        
+        var timeString = ""
+        let secondsMod = viewmodel.duration % 60
+
+        if secondsMod < 10 {
+            timeString = "\(viewmodel.duration/60):0\(secondsMod)"
+        } else {
+            timeString = "\(viewmodel.duration/60):\(viewmodel.duration%60)"
+        }
+
+        trackNumber = viewmodel.id
+        durationLabel.text = timeString
         trackNameLabel.text = viewmodel.title
         artistLabel.text = viewmodel.artist
         
+        isLiked = viewmodel.isLiked
+        setUpLikeButton(isLiked_: isLiked)
         
-        var a = 0
-        var b = ""
-
-
-        a = viewmodel.duration%60
-        if a < 10 {
-            b = String(viewmodel.duration/60)+":"+"0"+String(a)
-        } else {b = String(viewmodel.duration/60) + ":" + String(viewmodel.duration%60)}
-
-
-        
-        durationLabel.text = b
+        isPlus = viewmodel.isPlus
+        setUpPlusButton(isPlus_: isPlus)
         
         guard let url = URL(string: "https://musicexpress.sarafa2n.ru" + viewmodel.poster) else {
             return
         }
         
         trackImage.sd_setImage(with: url, completed: nil)
-        
-        
     }
     
+    @objc func didTapLike() {
+        APICaller.shared.postOrDeleteTrackLike(
+            trackNumber: self.trackNumber,
+            like: isLiked
+        ) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    UIView.animate(
+                        withDuration: 0.2,
+                        animations: {
+                            self.likeButton.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                        },
+                        completion: { _ in
+                            UIView.animate(withDuration: 0.2) {
+                                self.likeButton.transform = CGAffineTransform.identity
+                            }
+                        }
+                    )
+
+                    self.isLiked = !self.isLiked
+                    self.setUpLikeButton(isLiked_: self.isLiked)
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    break
+                }
+            }
+        }
+    }
+    
+    @objc func didTapPlus() {
+        APICaller.shared.postOrDeleteTrackFavorite(
+            trackNumber: self.trackNumber,
+            favorite: isPlus
+        ) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    UIView.animate(
+                        withDuration: 0.2,
+                        animations: {
+                            self.plusButton.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                        },
+                        completion: { _ in
+                            UIView.animate(withDuration: 0.2) {
+                                self.plusButton.transform = CGAffineTransform.identity
+                            }
+                        }
+                    )
+                    self.isPlus = !self.isPlus
+                    self.setUpPlusButton(isPlus_: self.isPlus)
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    break
+                }
+            }
+        }
+    }
+    
+    private func setUpLikeButton(isLiked_: Bool) {
+        let imageName = isLiked_ ? "heart.fill" : "heart"
+        let symbolConfig = UIImage.SymbolConfiguration(textStyle: .largeTitle)
+        let image = UIImage(systemName: imageName, withConfiguration: symbolConfig)
+        self.likeButton.setImage(image, for: .normal)
+        self.likeButton.tintColor = .white
+    }
+    
+    private func setUpPlusButton(isPlus_: Bool) {
+        let imageName = isPlus_ ? "plus.circle.fill" : "plus.circle"
+        let symbolConfig = UIImage.SymbolConfiguration(textStyle: .largeTitle)
+        let image = UIImage(systemName: imageName, withConfiguration: symbolConfig)
+        self.plusButton.setImage(image, for: .normal)
+        self.plusButton.tintColor = .white
+    }
 }

@@ -8,13 +8,14 @@
 import Foundation
 
 struct TopSongsCellViewModel {
-    
+    let id: Int
     let title: String
     let duration: Int
     let artist: String
     let album_poster: String
     let artist_id: Int?
-    
+    let isLiked: Bool
+    let isPlus: Bool
 }
 
 
