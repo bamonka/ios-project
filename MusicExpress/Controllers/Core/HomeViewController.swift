@@ -123,6 +123,7 @@ class HomeViewController: UIViewController {
             defer {
                 group.leave()
             }
+
             switch result {
             case .success(let songs):
                 albums = songs 
@@ -139,7 +140,6 @@ class HomeViewController: UIViewController {
             }
             
             switch result {
-            
             case .success(let dayGroup):
                 groupOfDay = [dayGroup]
                 break
@@ -168,13 +168,13 @@ class HomeViewController: UIViewController {
             defer {
                 group.leave()
             }
-            switch result{
+
+            switch result {
             case .success(let GottopAlbums):
                 topAlbums = GottopAlbums
             case .failure(let error):
                 print("Can't get top albums",error)
-        }
-        
+            }
         }
         
         
@@ -203,16 +203,12 @@ class HomeViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-   
-    
     private func configureModels(
         albums: [Song],
         tracks: [Song],
         groupOfDay: [Song],
         newSongs: [Song],
         topAlbums: [Song]
-    
-    
     ) {
         
         self.albums = albums
@@ -553,7 +549,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return UICollectionReusableView()
         }
         
-        
+
         let section = indexPath.section
         let title = sections[section].title
         
@@ -562,10 +558,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         return header
         
     }
-    
-    
-    
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let type = sections[section]
         switch type {
@@ -669,8 +662,6 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             cell.teamNameLabel.font = .systemFont(ofSize: 13, weight: .light)
             cell.teamNameLabel.numberOfLines = 0
             cell.teamNameLabel.frame = CGRect(x: 2, y: 0, width: 300, height: 100)
-            
-            
             
             return cell
         }

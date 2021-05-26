@@ -9,11 +9,9 @@ import Foundation
 
 
 struct AlbumHeaderCellViewModel {
-    
     let albumName: String
     let artistName: String
     let poster: String
     let description: String?
     let artist_id : Int?
-
 }

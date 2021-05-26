@@ -9,11 +9,14 @@ import Foundation
 
 // приходит с бэка и декодится в это
 
+struct PlayList: Codable {
+    let tracks: [Track]?
+}
+
 struct ArtistAlbums: Codable {
-    
     let albums : [Song]?
     let artist : Song?
-    
+    let playlist : PlayList?
 }
 
 
@@ -62,6 +65,7 @@ struct Song: Codable {
     let artist : String? // трэк
     let artist_id: Int?
     let tracks: [Track]?
+    let playlist : PlayList?
     let description: String?
     let is_liked: Bool?
     let is_favorite: Bool?

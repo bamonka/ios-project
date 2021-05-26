@@ -165,6 +165,13 @@ final class APICaller {
         )
     }
     
+    public func getPlaylists(completion: @escaping (Result<[Song], Error>) -> Void) {
+        getSongs(
+            url: getAPIURLFromPath(path: "playlists"),
+            completion: completion
+        )
+    }
+    
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
         
     }
@@ -390,6 +397,7 @@ final class APICaller {
                 
                 if httpResponse.statusCode != 200 {
                     completion(.failure(APIError.wrongLoginOrPassword))
+                    return
                 }
                 
                 let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields, for: url)
@@ -433,6 +441,35 @@ final class APICaller {
                 } catch {
                     completion(.failure(error))
                 }
+            }
+            task.resume()
+        }
+    }
+    
+    public func postPlaylist(with name:String, completion: @escaping (Result<Bool, Error>)-> Void) {
+        createRequest(
+            with: getAPIURLFromPath(path: "playlists")!,
+            method: .Post
+        ) { request in
+            var request = request
+            request.httpBody = "{\"title\": \"\(name)\"}".data(using: .utf8)
+            let task = URLSession.shared.dataTask(with: request) {_, response, error in
+                guard error == nil else {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    completion(.failure(APIError.somethingGoWrong))
+                    return
+                }
+                
+                print(httpResponse.statusCode)
+                if httpResponse.statusCode != 200 {
+                    completion(.failure(APIError.somethingGoWrong))
+                    return
+                }
+                completion(.success(true))
             }
             task.resume()
         }

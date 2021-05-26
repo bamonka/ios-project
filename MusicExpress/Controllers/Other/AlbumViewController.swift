@@ -66,7 +66,6 @@ class AlbumViewController: UIViewController {
     
     private var viewModels = [TopSongsCellViewModel]()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = album?.title
@@ -93,7 +92,8 @@ class AlbumViewController: UIViewController {
                 switch result{
                 case .success(let model):
                     self?.currentArtistId = model.artist_id ?? 0
-                    self?.viewModels = (model.tracks?.compactMap({
+                    
+                    self?.viewModels = model.tracks?.compactMap({
                         return TopSongsCellViewModel(
                             id: $0.id ?? 0,
                             title: $0.title ?? "",
@@ -104,7 +104,9 @@ class AlbumViewController: UIViewController {
                             isLiked: $0.is_liked ?? false,
                             isPlus:$0.is_favorite ?? false
                         )
-                    }))!
+                    }) ?? [TopSongsCellViewModel]()
+                    
+                    
                     APICaller.shared.getDescription(
                         artist_id: self?.currentArtistId ?? 0
                     ) { [weak self] result in
