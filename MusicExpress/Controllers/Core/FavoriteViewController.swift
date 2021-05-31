@@ -119,7 +119,7 @@ class FavoriteViewController: UIViewController {
                             artist_id: $0.artist_id ?? 0,
                             audio: $0.audio ?? "",
                             duration: $0.duration ?? 0,
-                            id: 0,
+                            id: $0.id,
                             index: 0,
                             is_favorite: $0.is_favorite ?? nil,
                             is_liked: $0.is_liked ?? nil,
@@ -148,6 +148,75 @@ class FavoriteViewController: UIViewController {
                 }
             }
         }
+        
+        addLongTapGesture()
+    }
+    
+    private func addLongTapGesture() {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_ :)))
+        collectionViewSongs.addGestureRecognizer(gesture)
+    }
+    
+    @objc func didLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else {
+            return
+        }
+
+        let touchPoint = gesture.location(in: collectionViewSongs)
+        
+        guard let indexPath = collectionViewSongs.indexPathForItem(at: touchPoint) else {
+            return
+        }
+        
+        let model = tracks[indexPath.row]
+        print(model)
+        let actionSheet = UIAlertController(
+            title: model.title,
+            message: "Хотите добавить в плейлист?",
+            preferredStyle: .actionSheet
+        )
+        
+        actionSheet.addAction(
+            UIAlertAction(
+                title: "Отмена",
+                style: .cancel,
+                handler: nil
+            )
+        )
+        
+        actionSheet.addAction(
+            UIAlertAction(
+                title: "Добавить",
+                style: .default,
+                handler: { [weak self] _ in
+                    DispatchQueue.main.async {
+                        let vc = PlaylistsViewController()
+                        vc.selectionHandler = { playlist in
+                            APICaller.shared.postSongToPlaylist(
+                                trackNumber: model.id ?? 0,
+                                playlistNumber: playlist.id ?? 0
+                            ) { result in
+                                switch result{
+                                case .success(_):
+                                    break
+                                case .failure(let error):
+                                    print(error)
+                                    break
+                                }
+                            }
+                        }
+                        vc.title = "Выберите плейлист"
+                        self?.present(
+                            UINavigationController(rootViewController: vc),
+                            animated: true,
+                            completion: nil
+                        )
+                    }
+                }
+            )
+        )
+        
+        present(actionSheet, animated: true)
     }
 }
 

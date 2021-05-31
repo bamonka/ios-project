@@ -8,6 +8,8 @@
 import UIKit
 
 class PlaylistsViewController: UIViewController {
+    public var selectionHandler: ((Song) -> Void)?
+
     private let noPlaylistsImage : UIImageView = {
         let imageView = UIImageView()
         let image = UIImage(named: "No-playlists-image.png")
@@ -149,6 +151,18 @@ class PlaylistsViewController: UIViewController {
                 }
             }
         }
+        
+        if selectionHandler != nil {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .close,
+                target: self,
+                action: #selector(didTapClose)
+            )
+        }
+    }
+    
+    @objc func didTapClose() {
+        dismiss(animated: true, completion: nil)
     }
     
     @objc func didTapCreatePlaylistButton () {
@@ -211,6 +225,12 @@ extension PlaylistsViewController: UICollectionViewDelegate, UICollectionViewDat
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
 
+        guard selectionHandler == nil else {
+            self.selectionHandler?(albums[indexPath.row])
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        
         let album = viewModels[indexPath.row]
         let vc = PlaylistViewController(album: albums[indexPath.row])
 

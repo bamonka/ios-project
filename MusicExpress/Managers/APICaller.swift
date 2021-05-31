@@ -274,6 +274,40 @@ final class APICaller {
         }
     }
     
+    public func postSongToPlaylist(
+        trackNumber: Int,
+        playlistNumber: Int,
+        completion: @escaping (Result<Bool, Error>) -> Void
+    ) {
+        createRequest(
+            with: getAPIURLFromPath(path: "playlists/\(playlistNumber)/tracks"),
+            method: .Post
+        ) { request in
+            var request = request
+            request.httpBody = "{\"track_id\": \(trackNumber)}".data(using: .utf8)
+            let task = URLSession.shared.dataTask(with: request) {_, response, error in
+                guard error == nil else {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+                print(httpResponse.statusCode)
+                
+                if httpResponse.statusCode != 200 {
+                    completion(.failure(APIError.somethingGoWrong))
+                    return
+                }
+
+                completion(.success(true))
+            }
+            task.resume()
+        }
+    }
+    
     public func getGroupOfDay(completion: @escaping (Result<Song, Error>) -> Void) {
         createRequest(
             with: URL(string: Constans.domen + Constans.api + "artist/day")!,

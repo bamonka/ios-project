@@ -88,6 +88,125 @@ class HomeViewController: UIViewController {
         configureCollectionView()
         view.addSubview(spinner)
         fetchData()
+        
+        addLongTapGesture()
+    }
+    
+    private func addLongTapGesture() {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_ :)))
+        collectionView.addGestureRecognizer(gesture)
+    }
+    
+    @objc func didLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else {
+            return
+        }
+
+        let touchPoint = gesture.location(in: collectionView)
+        
+        guard let indexPath = collectionView.indexPathForItem(at: touchPoint) else {
+            return
+        }
+        
+        if (indexPath.section == 3) {
+            let model = tracks[indexPath.row]
+            let actionSheet = UIAlertController(
+                title: model.name,
+                message: "Хотите добавить в плейлист?",
+                preferredStyle: .actionSheet
+            )
+            
+            actionSheet.addAction(
+                UIAlertAction(
+                    title: "Отмена",
+                    style: .cancel,
+                    handler: nil
+                )
+            )
+            
+            actionSheet.addAction(
+                UIAlertAction(
+                    title: "Добавить",
+                    style: .default,
+                    handler: { [weak self] _ in
+                        DispatchQueue.main.async {
+                            let vc = PlaylistsViewController()
+                            vc.selectionHandler = { playlist in
+                                APICaller.shared.postSongToPlaylist(
+                                    trackNumber: model.id ?? 0,
+                                    playlistNumber: playlist.id ?? 0
+                                ) { result in
+                                    switch result{
+                                    case .success(_):
+                                        break
+                                    case .failure(let error):
+                                        print(error)
+                                        break
+                                    }
+                                }
+                            }
+                            vc.title = "Выберите плейлист"
+                            self?.present(
+                                UINavigationController(rootViewController: vc),
+                                animated: true,
+                                completion: nil
+                            )
+                        }
+                    }
+                )
+            )
+            
+            present(actionSheet, animated: true)
+        } else if (indexPath.section == 2) {
+            let model = newSongs[indexPath.row]
+            let actionSheet = UIAlertController(
+                title: model.name,
+                message: "Хотите добавить в плейлист?",
+                preferredStyle: .actionSheet
+            )
+            
+            actionSheet.addAction(
+                UIAlertAction(
+                    title: "Отмена",
+                    style: .cancel,
+                    handler: nil
+                )
+            )
+            
+            actionSheet.addAction(
+                UIAlertAction(
+                    title: "Добавить",
+                    style: .default,
+                    handler: { [weak self] _ in
+                        DispatchQueue.main.async {
+                            let vc = PlaylistsViewController()
+                            vc.selectionHandler = { playlist in
+                                APICaller.shared.postSongToPlaylist(
+                                    trackNumber: model.id ?? 0,
+                                    playlistNumber: playlist.id ?? 0
+                                ) { result in
+                                    switch result{
+                                    case .success(_):
+                                        break
+                                    case .failure(let error):
+                                        print(error)
+                                        break
+                                    }
+                                }
+                            }
+                            vc.title = "Выберите плейлист"
+                            self?.present(
+                                UINavigationController(rootViewController: vc),
+                                animated: true,
+                                completion: nil
+                            )
+                        }
+                    }
+                )
+            )
+
+            present(actionSheet, animated: true)
+        }
     }
     
     private func fetchData() {
