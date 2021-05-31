@@ -6,17 +6,18 @@
 //
 
 import UIKit
+import SDWebImage
 
 
 protocol ArtistHeaderCollectionReusableViewDelegate : AnyObject {
-    func artistHeaderCollectionReusableViewDidTapPlayAll(_ header : ArtistHeaderCollectionReusableView)
+    func didTapPlayAllArtist(_ header : ArtistHeaderCollectionReusableView)
 }
 
 final class ArtistHeaderCollectionReusableView: UICollectionReusableView {
     
     static let identifier = "ArtistHeaderCollectionReusableView"
         
-    weak var delegate : ArtistHeaderCollectionReusableViewDelegate?
+     weak var delegate : ArtistHeaderCollectionReusableViewDelegate?
 
     
     private let atristNameLabel: UILabel = {
@@ -53,7 +54,7 @@ final class ArtistHeaderCollectionReusableView: UICollectionReusableView {
         return imageView
     }()
     
-    private let playAllButton : UIButton = {
+    private let artistPlayAllButton : UIButton = {
         let button = UIButton()
         button.backgroundColor = .systemRed
         button.setImage(UIImage(systemName:"play.fill"), for: .normal)
@@ -75,17 +76,17 @@ final class ArtistHeaderCollectionReusableView: UICollectionReusableView {
         addSubview(artistAvatar)
         addSubview(descriptionLabel)
         addSubview(atristNameLabel)
-        addSubview(playAllButton)
-        playAllButton.addTarget(self, action: #selector(didTapPlayAll), for: .touchUpInside)
+        addSubview(artistPlayAllButton)
+        artistPlayAllButton.addTarget(self, action: #selector(didTapPlayAllArtist), for: .touchUpInside)
 
     }
     required init?(coder: NSCoder) {
         fatalError()
     }
     
-    @objc private func didTapPlayAll () {
+    @objc private func didTapPlayAllArtist () {
         //
-        delegate?.artistHeaderCollectionReusableViewDidTapPlayAll(self)
+        delegate?.didTapPlayAllArtist(self)
     }
     
     override func layoutSubviews() {
@@ -97,7 +98,7 @@ final class ArtistHeaderCollectionReusableView: UICollectionReusableView {
         artistAvatar.frame = CGRect(x: 10, y: atristNameLabel.bottom - 15, width: width - 20, height: 44)
         descriptionLabel.textAlignment = .natural
         descriptionLabel.frame = CGRect(x: 10, y: artistAvatar.bottom - 15, width: width - 20, height: 150)
-        playAllButton.frame = CGRect(x: width - 100, y: artistAvatar.top, width: 50, height: 50)
+        artistPlayAllButton.frame = CGRect(x: width - 100, y: artistAvatar.top, width: 50, height: 50)
         
     }
     
@@ -112,7 +113,7 @@ final class ArtistHeaderCollectionReusableView: UICollectionReusableView {
                                                                         
                                                                         case .success(let Gotdescription):
                                                                             self.descriptionLabel.text = Gotdescription.description
-                                                                            print("Got description")
+                                                                            
                                                                              
                                                                            
                                                                         case.failure(let error):

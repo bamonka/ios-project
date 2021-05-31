@@ -16,6 +16,7 @@ struct TopSongsCellViewModel {
     let artist_id: Int?
     let isLiked: Bool
     let isPlus: Bool
+    let audio : String
 }
 
 

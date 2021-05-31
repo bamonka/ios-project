@@ -22,7 +22,7 @@ final class AuthManager {
             ) ?? Date()
         )
         
-        print(credentials.expired, credentials.cookie, credentials.csrf)
+     //   print(credentials.expired, credentials.cookie, credentials.csrf)
     }
     
     public func isSignedIn() -> Bool {

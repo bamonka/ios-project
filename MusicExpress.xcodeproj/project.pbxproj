@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D9B1B99D54943B88CB783DA /* Pods_MusicExpress.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 984C1546CD0302ABED54772E /* Pods_MusicExpress.framework */; };
 		551240FE2652CF110005FFB9 /* SearchResultCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551240FD2652CF110005FFB9 /* SearchResultCollectionViewCell.swift */; };
 		551241012652D41B0005FFB9 /* SearchResultViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551241002652D41B0005FFB9 /* SearchResultViewCellViewModel.swift */; };
 		553F008D263023CD008D25A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553F008C263023CD008D25A5 /* AppDelegate.swift */; };
@@ -37,7 +38,6 @@
 		55D455872635BB60002FBD48 /* SettingsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D455862635BB60002FBD48 /* SettingsModels.swift */; };
 		55D455942635EA50002FBD48 /* TopTracksCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D455932635EA50002FBD48 /* TopTracksCollectionViewCell.swift */; };
 		55D4559826361615002FBD48 /* NewSongsCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4559726361615002FBD48 /* NewSongsCellViewModel.swift */; };
-		6B6A09F05FDE4CECE120DF94 /* Pods_MusicExpress.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC1714AE17412EA16368225C /* Pods_MusicExpress.framework */; };
 		9B1781BB2632F66D008A7634 /* API_Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B1781BA2632F66D008A7634 /* API_Response.swift */; };
 		9B1781BF263324A7008A7634 /* RecommendedAlbumsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B1781BE263324A7008A7634 /* RecommendedAlbumsCollectionViewCell.swift */; };
 		9B1781C326332592008A7634 /* AlbumCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B1781C226332592008A7634 /* AlbumCellViewModel.swift */; };
@@ -45,6 +45,8 @@
 		9B1E6E97264A8565008EC2EA /* PopularAlbumCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B1E6E96264A8565008EC2EA /* PopularAlbumCollectionViewCell.swift */; };
 		9B1E6E99264B01F6008EC2EA /* TeamNameCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B1E6E98264B01F6008EC2EA /* TeamNameCollectionViewCell.swift */; };
 		9B1E6E9B264D8BBA008EC2EA /* AlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B1E6E9A264D8BBA008EC2EA /* AlbumViewController.swift */; };
+		9B3A17E3265FE8360082302F /* PlayBackPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B3A17E2265FE8360082302F /* PlayBackPresenter.swift */; };
+		9B3A17E5266007CA0082302F /* PlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B3A17E4266007CA0082302F /* PlayerControlsView.swift */; };
 		9B6E23142652A0080023C2A6 /* AlbumHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B6E23132652A0080023C2A6 /* AlbumHeaderCollectionReusableView.swift */; };
 		9B78DDDA265696F500CFE7FD /* No-Favorite-image.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B78DDD8265696F400CFE7FD /* No-Favorite-image.png */; };
 		9B78DDDB265696F500CFE7FD /* No-playlists-image.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B78DDD9265696F500CFE7FD /* No-playlists-image.png */; };
@@ -62,7 +64,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4CC677F9C2B56A4A7D60CFF8 /* Pods-MusicExpress.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MusicExpress.release.xcconfig"; path = "Target Support Files/Pods-MusicExpress/Pods-MusicExpress.release.xcconfig"; sourceTree = "<group>"; };
+		416F101FA245EA84A75698E4 /* Pods-MusicExpress.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MusicExpress.release.xcconfig"; path = "Target Support Files/Pods-MusicExpress/Pods-MusicExpress.release.xcconfig"; sourceTree = "<group>"; };
 		551240FD2652CF110005FFB9 /* SearchResultCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCollectionViewCell.swift; sourceTree = "<group>"; };
 		551241002652D41B0005FFB9 /* SearchResultViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewCellViewModel.swift; sourceTree = "<group>"; };
 		553F0089263023CD008D25A5 /* MusicExpress.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicExpress.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,7 +97,8 @@
 		55D455862635BB60002FBD48 /* SettingsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModels.swift; sourceTree = "<group>"; };
 		55D455932635EA50002FBD48 /* TopTracksCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTracksCollectionViewCell.swift; sourceTree = "<group>"; };
 		55D4559726361615002FBD48 /* NewSongsCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSongsCellViewModel.swift; sourceTree = "<group>"; };
-		5FD73474F22EBBF7C9941D1B /* Pods-MusicExpress.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MusicExpress.debug.xcconfig"; path = "Target Support Files/Pods-MusicExpress/Pods-MusicExpress.debug.xcconfig"; sourceTree = "<group>"; };
+		77E5B171E34892F7DAC2CEBC /* Pods-MusicExpress.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MusicExpress.debug.xcconfig"; path = "Target Support Files/Pods-MusicExpress/Pods-MusicExpress.debug.xcconfig"; sourceTree = "<group>"; };
+		984C1546CD0302ABED54772E /* Pods_MusicExpress.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MusicExpress.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B1781BA2632F66D008A7634 /* API_Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API_Response.swift; sourceTree = "<group>"; };
 		9B1781BE263324A7008A7634 /* RecommendedAlbumsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedAlbumsCollectionViewCell.swift; sourceTree = "<group>"; };
 		9B1781C226332592008A7634 /* AlbumCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlbumCellViewModel.swift; path = MusicExpress/Views/Browse/AlbumCellViewModel.swift; sourceTree = SOURCE_ROOT; };
@@ -103,6 +106,8 @@
 		9B1E6E96264A8565008EC2EA /* PopularAlbumCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularAlbumCollectionViewCell.swift; sourceTree = "<group>"; };
 		9B1E6E98264B01F6008EC2EA /* TeamNameCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamNameCollectionViewCell.swift; sourceTree = "<group>"; };
 		9B1E6E9A264D8BBA008EC2EA /* AlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumViewController.swift; sourceTree = "<group>"; };
+		9B3A17E2265FE8360082302F /* PlayBackPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayBackPresenter.swift; sourceTree = "<group>"; };
+		9B3A17E4266007CA0082302F /* PlayerControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsView.swift; sourceTree = "<group>"; };
 		9B6E23132652A0080023C2A6 /* AlbumHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		9B78DDD8265696F400CFE7FD /* No-Favorite-image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "No-Favorite-image.png"; sourceTree = "<group>"; };
 		9B78DDD9265696F500CFE7FD /* No-playlists-image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "No-playlists-image.png"; sourceTree = "<group>"; };
@@ -117,7 +122,6 @@
 		9BD7E9AC263600A1003C0829 /* letsFindSomeThingImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = letsFindSomeThingImage.png; sourceTree = "<group>"; };
 		9BD7E9AF26361D6B003C0829 /* SearchReslutResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchReslutResponse.swift; sourceTree = "<group>"; };
 		9BF7742F2652BDAC00EADB6E /* AlbumHeaderCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumHeaderCellViewModel.swift; sourceTree = "<group>"; };
-		EC1714AE17412EA16368225C /* Pods_MusicExpress.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MusicExpress.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,7 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B6A09F05FDE4CECE120DF94 /* Pods_MusicExpress.framework in Frameworks */,
+				1D9B1B99D54943B88CB783DA /* Pods_MusicExpress.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,7 +150,7 @@
 				553F008B263023CD008D25A5 /* MusicExpress */,
 				553F008A263023CD008D25A5 /* Products */,
 				C4B6428A5D4DC4D3FCF66C77 /* Pods */,
-				F4F95C4E968D1D39A14196BD /* Frameworks */,
+				ECA84149EEADF5592BA0C164 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -161,6 +165,7 @@
 		553F008B263023CD008D25A5 /* MusicExpress */ = {
 			isa = PBXGroup;
 			children = (
+				9B3A17E1265FE81C0082302F /* Presenter */,
 				553F00A726305A57008D25A5 /* Resources */,
 				553F00A5263059E7008D25A5 /* Managers */,
 				553F00A4263059DD008D25A5 /* ViewModels */,
@@ -189,6 +194,7 @@
 				553F0097263023D0008D25A5 /* LaunchScreen.storyboard */,
 				9B6E23132652A0080023C2A6 /* AlbumHeaderCollectionReusableView.swift */,
 				9B78DDE22656CA2D00CFE7FD /* ArtistHeaderCollectionReusableView.swift */,
+				9B3A17E4266007CA0082302F /* PlayerControlsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -287,6 +293,14 @@
 			path = Browse;
 			sourceTree = "<group>";
 		};
+		9B3A17E1265FE81C0082302F /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				9B3A17E2265FE8360082302F /* PlayBackPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
 		9BD7E9AB2636007D003C0829 /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -300,16 +314,16 @@
 		C4B6428A5D4DC4D3FCF66C77 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5FD73474F22EBBF7C9941D1B /* Pods-MusicExpress.debug.xcconfig */,
-				4CC677F9C2B56A4A7D60CFF8 /* Pods-MusicExpress.release.xcconfig */,
+				77E5B171E34892F7DAC2CEBC /* Pods-MusicExpress.debug.xcconfig */,
+				416F101FA245EA84A75698E4 /* Pods-MusicExpress.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		F4F95C4E968D1D39A14196BD /* Frameworks */ = {
+		ECA84149EEADF5592BA0C164 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EC1714AE17412EA16368225C /* Pods_MusicExpress.framework */,
+				984C1546CD0302ABED54772E /* Pods_MusicExpress.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -321,11 +335,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 553F009D263023D0008D25A5 /* Build configuration list for PBXNativeTarget "MusicExpress" */;
 			buildPhases = (
-				347D69EAEEC6B541246055AE /* [CP] Check Pods Manifest.lock */,
+				6EB3D55C2517BFC1F9DE4E42 /* [CP] Check Pods Manifest.lock */,
 				553F0085263023CD008D25A5 /* Sources */,
 				553F0086263023CD008D25A5 /* Frameworks */,
 				553F0087263023CD008D25A5 /* Resources */,
-				602616937A5FB94038F2F6BD /* [CP] Embed Pods Frameworks */,
+				B46047E16FF3E177A17AC88F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -384,7 +398,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		347D69EAEEC6B541246055AE /* [CP] Check Pods Manifest.lock */ = {
+		6EB3D55C2517BFC1F9DE4E42 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -406,7 +420,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		602616937A5FB94038F2F6BD /* [CP] Embed Pods Frameworks */ = {
+		B46047E16FF3E177A17AC88F /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -446,6 +460,7 @@
 				55B65C9126305C81005F761C /* TabBarViewController.swift in Sources */,
 				553F0091263023CD008D25A5 /* HomeViewController.swift in Sources */,
 				9B1E6E99264B01F6008EC2EA /* TeamNameCollectionViewCell.swift in Sources */,
+				9B3A17E3265FE8360082302F /* PlayBackPresenter.swift in Sources */,
 				9B6E23142652A0080023C2A6 /* AlbumHeaderCollectionReusableView.swift in Sources */,
 				9B78DDDD2656AB0900CFE7FD /* PlaylistsViewController.swift in Sources */,
 				9B78DDE12656C75E00CFE7FD /* ArtistViewController.swift in Sources */,
@@ -476,6 +491,7 @@
 				55B65CB126305DD6005F761C /* SearchResultViewController.swift in Sources */,
 				55B65CB726305E2D005F761C /* APICaller.swift in Sources */,
 				55B65CA526305D97005F761C /* SettingsViewController.swift in Sources */,
+				9B3A17E5266007CA0082302F /* PlayerControlsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -611,7 +627,7 @@
 		};
 		553F009E263023D0008D25A5 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5FD73474F22EBBF7C9941D1B /* Pods-MusicExpress.debug.xcconfig */;
+			baseConfigurationReference = 77E5B171E34892F7DAC2CEBC /* Pods-MusicExpress.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -631,7 +647,7 @@
 		};
 		553F009F263023D0008D25A5 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4CC677F9C2B56A4A7D60CFF8 /* Pods-MusicExpress.release.xcconfig */;
+			baseConfigurationReference = 416F101FA245EA84A75698E4 /* Pods-MusicExpress.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

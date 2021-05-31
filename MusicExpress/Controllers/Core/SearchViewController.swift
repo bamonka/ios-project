@@ -140,6 +140,7 @@ class SearchViewController: UIViewController, UISearchResultsUpdating, UISearchB
                        results.artists == nil,
                        results.tracks == nil {
                         print("No found items")
+                        // view hidden 
                        // resultsController.update(with: emptyResults)
                     } else {
                         resultsController.update(with: results)

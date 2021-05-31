@@ -58,6 +58,7 @@ class ArtistViewController: UIViewController {
     }
     
     private var viewModels = [TopSongsCellViewModel]()
+    private var tracks = [Song] ()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,6 +83,7 @@ class ArtistViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result{
                 case .success(let model):
+                    self?.tracks = model
                     self?.viewModels = model.compactMap({
                         return TopSongsCellViewModel(
                             id: $0.id ?? 0,
@@ -91,7 +93,8 @@ class ArtistViewController: UIViewController {
                             album_poster: $0.album_poster ?? "",
                             artist_id: $0.artist_id ?? 0,
                             isLiked: $0.is_liked ?? false,
-                            isPlus: $0.is_favorite ?? false
+                            isPlus: $0.is_favorite ?? false,
+                            audio: $0.audio ?? ""
                         )
                     })
                     self?.collectionViewSongs.reloadData()
@@ -153,13 +156,22 @@ extension ArtistViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // play song
+        
+        let index = indexPath.row
+        let track = tracks[index]
+        
+        PlayBackPresenter.shared.startPlaybackWithSong(from: self, track: track)
+        
     }
 }
 extension ArtistViewController: ArtistHeaderCollectionReusableViewDelegate {
-    func artistHeaderCollectionReusableViewDidTapPlayAll(_ header: ArtistHeaderCollectionReusableView) {
+    func didTapPlayAllArtist(_ header: ArtistHeaderCollectionReusableView) {
         print("Play all - artist")
     }
+    
+    
+    
+   
     
     
 }

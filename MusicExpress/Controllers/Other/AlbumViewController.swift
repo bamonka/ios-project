@@ -65,6 +65,7 @@ class AlbumViewController: UIViewController {
     }
     
     private var viewModels = [TopSongsCellViewModel]()
+    private var tracks = [Track]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,7 +92,23 @@ class AlbumViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result{
                 case .success(let model):
+                    
                     self?.currentArtistId = model.artist_id ?? 0
+                    self?.tracks = model.tracks?.compactMap({
+                        return Track(album_id: 0,
+                                     album_poster: $0.album_poster ?? "",
+                                     artist: $0.artist ?? "",
+                                     artist_id: $0.artist_id ?? 0,
+                                     audio: $0.audio ?? "",
+                                     duration: $0.duration ?? 0,
+                                     id: 0,
+                                     index: 0,
+                                     is_favorite: $0.is_favorite ?? nil,
+                                     is_liked: $0.is_liked ?? nil,
+                                     title: $0.title ?? "")
+                    }) ?? [Track]()
+                    
+        //            self?.tracks = model.tracks ?? []
                     
                     self?.viewModels = model.tracks?.compactMap({
                         return TopSongsCellViewModel(
@@ -102,7 +119,8 @@ class AlbumViewController: UIViewController {
                             album_poster: $0.album_poster ?? "",
                             artist_id: $0.artist_id ?? 0,
                             isLiked: $0.is_liked ?? false,
-                            isPlus:$0.is_favorite ?? false
+                            isPlus:$0.is_favorite ?? false,
+                            audio: $0.audio ?? ""
                         )
                     }) ?? [TopSongsCellViewModel]()
                     
@@ -201,11 +219,19 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         // play song
+        let index = indexPath.row
+        let track = tracks[index]
+        PlayBackPresenter.shared.startPlaybackWithTrack(from: self, track: track)
+        
     }
 }
 
 extension AlbumViewController: AlbumHeaderCollectionReusableViewDelegate {
     func albumHeaderCollectionReusableViewDidTapPlayAll(_ header: AlbumHeaderCollectionReusableView) {
         print("Playing all")
+        PlayBackPresenter.shared.startPlaybackAllWithTrack(
+            from: self,
+            tracks: tracks
+        )
     }
 }

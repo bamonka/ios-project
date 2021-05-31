@@ -9,7 +9,6 @@ import UIKit
 import SDWebImage
 
 
-
 protocol AlbumHeaderCollectionReusableViewDelegate : AnyObject {
     func albumHeaderCollectionReusableViewDidTapPlayAll(_ header : AlbumHeaderCollectionReusableView)
 }
@@ -110,7 +109,7 @@ final class AlbumHeaderCollectionReusableView: UICollectionReusableView {
                                                                         
                                                                         case .success(let Gotdescription):
                                                                             self.descriptionLabel.text = Gotdescription.description
-                                                                            print("Got description")
+                                                                            
                                                                              
                                                                            
                                                                         case.failure(let error):

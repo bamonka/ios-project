@@ -119,7 +119,8 @@ class FavoriteViewController: UIViewController {
                             album_poster: $0.album_poster ?? "",
                             artist_id: $0.artist_id ?? 0,
                             isLiked: $0.is_liked ?? false,
-                            isPlus:$0.is_favorite ?? false
+                            isPlus:$0.is_favorite ?? false,
+                            audio: $0.audio ?? ""
                         )
                     })
                     self?.collectionViewSongs.reloadData()

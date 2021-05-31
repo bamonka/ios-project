@@ -142,7 +142,12 @@ class SearchResultViewController: UIViewController, UITableViewDelegate, UITable
 
             
         case "Tracks":
-            //play Music
+            
+            let track = result
+            PlayBackPresenter.shared.startPlaybackWithSong(from: self, track: track)
+            
+            
+            
             
             break
         default:

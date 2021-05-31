@@ -50,6 +50,7 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
     
     private let password: UITextField = {
         let tf = UITextField()
+        
         tf.borderStyle = .none
         tf.layer.cornerRadius = 5
         tf.backgroundColor = UIColor(red: 70 / 255, green: 70 / 255, blue: 70 / 255, alpha: 70 / 255)

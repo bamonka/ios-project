@@ -256,7 +256,8 @@ class HomeViewController: UIViewController {
                 album_poster: $0.album_poster ?? "",
                 artist_id: $0.artist_id ?? 0,
                 isLiked: $0.is_liked ?? false,
-                isPlus: $0.is_favorite ?? false
+                isPlus: $0.is_favorite ?? false,
+                audio: $0.audio ?? ""
             )
             
         })))
@@ -693,10 +694,16 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             navigationController?.pushViewController(vc, animated: true)
             
             break
+            
         case .newSongs:
-            break
+            
+            let track = newSongs[indexPath.row]
+            PlayBackPresenter.shared.startPlaybackWithSong(from: self, track: track)
+            
         case .topTracks:
-            break
+            let track = tracks[indexPath.row]
+            PlayBackPresenter.shared.startPlaybackWithSong(from: self, track: track)
+            
         case .topAlbums:
             
             let album = topAlbums[indexPath.row]
