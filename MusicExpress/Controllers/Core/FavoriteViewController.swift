@@ -8,6 +8,9 @@
 import UIKit
 
 class FavoriteViewController: UIViewController {
+    private var viewModels = [TopSongsCellViewModel]()
+    private var tracks = [Track]()
+
     private let collectionViewSongs = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewCompositionalLayout(
@@ -59,8 +62,6 @@ class FavoriteViewController: UIViewController {
         
     }()
     
-    private var viewModels = [TopSongsCellViewModel]()
-    
     private func drawEmpty() {
         view.addSubview(noFavoriteImage)
         view.addSubview(letsChangeItLabel)
@@ -110,6 +111,22 @@ class FavoriteViewController: UIViewController {
                         self?.drawEmpty()
                         return
                     }
+                    self?.tracks = model.compactMap({
+                        return Track(
+                            album_id: 0,
+                            album_poster: $0.album_poster ?? "",
+                            artist: $0.artist ?? "",
+                            artist_id: $0.artist_id ?? 0,
+                            audio: $0.audio ?? "",
+                            duration: $0.duration ?? 0,
+                            id: 0,
+                            index: 0,
+                            is_favorite: $0.is_favorite ?? nil,
+                            is_liked: $0.is_liked ?? nil,
+                            title: $0.title ?? ""
+                        )
+                    })
+
                     self?.viewModels = model.compactMap({
                         return TopSongsCellViewModel(
                             id: $0.id ?? 0,
@@ -123,6 +140,7 @@ class FavoriteViewController: UIViewController {
                             audio: $0.audio ?? ""
                         )
                     })
+
                     self?.collectionViewSongs.reloadData()
                 case.failure(let error):
                     print("failed to get album details", error)
@@ -157,6 +175,9 @@ extension FavoriteViewController: UICollectionViewDelegate, UICollectionViewData
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        // play song
+        
+        let index = indexPath.row
+        let track = tracks[index]
+        PlayBackPresenter.shared.startPlaybackWithTrack(from: self, track: track)
     }
 }

@@ -19,8 +19,6 @@ struct ArtistAlbums: Codable {
     let playlist : PlayList?
 }
 
-
-
 struct Track: Codable {
     let album_id: Int?
     let album_poster: String?
@@ -87,4 +85,8 @@ struct Song: Codable {
         case artist = "artist"
         case tracks
     } */
+}
+
+struct PlaylistAPI: Codable {
+    let playlist: PlayList
 }

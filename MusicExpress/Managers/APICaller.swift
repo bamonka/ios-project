@@ -172,6 +172,36 @@ final class APICaller {
         )
     }
     
+    public func getPlaylist(number : Int, completion: @escaping (Result<PlaylistAPI, Error>) -> Void) {
+        createRequest(
+            with: getAPIURLFromPath(path: "playlists/\(number)"),
+            method: HTTPMethod.Get
+        ) { request in
+            let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+                if error != nil {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+               
+                guard let data = data else {
+                    completion(.failure(APIError.faileedToGetData))
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    do {
+                        print(data)
+                        let decoded = try JSONDecoder().decode(PlaylistAPI.self, from: data)
+                        completion(.success(decoded))
+                    } catch {
+                        completion(.failure(error))
+                    }
+                }
+            }
+            task.resume()
+        }
+    }
+    
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
         
     }

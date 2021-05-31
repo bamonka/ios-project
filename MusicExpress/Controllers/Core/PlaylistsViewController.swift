@@ -212,7 +212,7 @@ extension PlaylistsViewController: UICollectionViewDelegate, UICollectionViewDat
         collectionView.deselectItem(at: indexPath, animated: true)
 
         let album = viewModels[indexPath.row]
-        let vc = AlbumViewController(album: albums[indexPath.row])
+        let vc = PlaylistViewController(album: albums[indexPath.row])
 
         vc.title = album.title
         vc.navigationItem.largeTitleDisplayMode = .never

@@ -119,7 +119,7 @@ final class AlbumHeaderCollectionReusableView: UICollectionReusableView {
                                                                 }            }
         )
         atristNameLabel.text = viewModel.artistName
-        
+
         guard let url = URL(string: "https://musicexpress.sarafa2n.ru" + viewModel.poster) else {
             return
         }
